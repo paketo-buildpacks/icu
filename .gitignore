@@ -1,6 +1,6 @@
 .DS_Store
 .idea
 .bin
-*.tgz
+/*.tgz
 icu-cnb_*
 /bin/
