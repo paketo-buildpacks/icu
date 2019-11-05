@@ -44,7 +44,7 @@ func (c Contributor) Contribute() error {
 	return c.icuLayer.Contribute(func(artifact string, layer layers.DependencyLayer) error {
 		layer.Logger.Body("Expanding to %s", layer.Root)
 
-		if err := helper.ExtractTarGz(artifact, layer.Root, 0); err != nil {
+		if err := helper.ExtractTarGz(artifact, layer.Root, 2); err != nil {
 			return err
 		}
 
