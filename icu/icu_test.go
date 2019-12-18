@@ -25,12 +25,12 @@ func testICU(t *testing.T, when spec.G, it spec.S) {
 	it.Before(func() {
 		RegisterTestingT(t)
 		factory = test.NewBuildFactory(t)
-		factory.AddDependencyWithVersion(Dependency, "65.1", stubICUFixture)
+		factory.AddDependencyWithVersion(Dependency, "65.1.0", stubICUFixture)
 	})
 
 	when("runtime.NewContributor", func() {
 		it("returns true if a build plan exists and matching version is found", func() {
-			factory.AddPlan(buildpackplan.Plan{Name: Dependency, Version: "65.1"})
+			factory.AddPlan(buildpackplan.Plan{Name: Dependency, Version: "65.1.0"})
 
 			_, willContribute, err := NewContributor(factory.Build)
 			Expect(err).NotTo(HaveOccurred())
@@ -38,7 +38,7 @@ func testICU(t *testing.T, when spec.G, it spec.S) {
 		})
 
 		it("returns false if a build plan exists and no matching version is found", func() {
-			factory.AddPlan(buildpackplan.Plan{Name: Dependency, Version: "60.0"})
+			factory.AddPlan(buildpackplan.Plan{Name: Dependency, Version: "60.0.0"})
 
 			_, willContribute, err := NewContributor(factory.Build)
 			Expect(err).To(HaveOccurred())
@@ -55,7 +55,7 @@ func testICU(t *testing.T, when spec.G, it spec.S) {
 
 	when("Contribute", func() {
 		it("installs the icu dependency and moves it on disk", func() {
-			factory.AddPlan(buildpackplan.Plan{Name: Dependency, Version: "65.1"})
+			factory.AddPlan(buildpackplan.Plan{Name: Dependency, Version: "65.1.0"})
 
 			ICUContributor, _, err := NewContributor(factory.Build)
 			Expect(err).NotTo(HaveOccurred())
@@ -71,7 +71,7 @@ func testICU(t *testing.T, when spec.G, it spec.S) {
 		it("contributes dotnet runtime to the build layer when included in the build plan", func() {
 			factory.AddPlan(buildpackplan.Plan{
 				Name:    Dependency,
-				Version: "65.1",
+				Version: "65.1.0",
 				Metadata: buildpackplan.Metadata{
 					"build": true,
 				},
@@ -89,7 +89,7 @@ func testICU(t *testing.T, when spec.G, it spec.S) {
 		it("contributes dotnet runtime to the launch layer when included in the build plan", func() {
 			factory.AddPlan(buildpackplan.Plan{
 				Name:    Dependency,
-				Version: "65.1",
+				Version: "65.1.0",
 				Metadata: buildpackplan.Metadata{
 					"launch": true,
 				},
