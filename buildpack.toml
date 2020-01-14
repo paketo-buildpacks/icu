@@ -11,11 +11,11 @@ api = "0.2"
 
   [[metadata.dependencies]]
     id = "icu"
-    sha256 = "25a9eeba71d88ba8f8d4426754300b4a9770d29003050f7581de0e09204204e8"
+    sha256 = "a840d1c351b90249487e3a970827a85b69632d87b723769251899881954cade0"
     source = "https://github.com/unicode-org/icu/releases/download/release-65-1/icu4c-65_1-Ubuntu18.04-x64.tgz"
     source_sha256 = "f90f422e0bc83168c97b26ba5d676ae7567e5317265a2592cb02b6d30c9c53c4"
     stacks = ["io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3"]
-    uri = "https://buildpacks.cloudfoundry.org/dependencies/icu/icu-65.1.0-any-stack-25a9eeba.tgz"
+    uri = "https://buildpacks.cloudfoundry.org/dependencies/icu/icu-65.1.0-any-stack-a840d1c3.tgz"
     version = "65.1.0"
 
 [[stacks]]
