@@ -1,5 +1,7 @@
 # ICU Cloud Native Buildpack
 
+The ICU CNB provides [International Components for Unicode](http://site.icu-project.org/home) libraries.
+
 ## Integration
 
 The ICU CNB provides icu as a dependency. Downstream buildpacks, like [Dotnet
