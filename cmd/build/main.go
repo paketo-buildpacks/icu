@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cloudfoundry/icu-cnb/icu"
 	"github.com/cloudfoundry/libcfbuildpack/build"
+	"github.com/paketo-buildpacks/icu/icu"
 )
 
 func main() {

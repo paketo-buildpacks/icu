@@ -1,4 +1,4 @@
-module github.com/cloudfoundry/icu-cnb
+module github.com/paketo-buildpacks/icu
 
 go 1.12
 

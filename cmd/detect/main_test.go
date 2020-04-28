@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/buildpack/libbuildpack/buildplan"
-	"github.com/cloudfoundry/icu-cnb/icu"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
 	"github.com/cloudfoundry/libcfbuildpack/test"
+	"github.com/paketo-buildpacks/icu/icu"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 

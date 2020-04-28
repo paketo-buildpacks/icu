@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/buildpack/libbuildpack/buildplan"
-	"github.com/cloudfoundry/icu-cnb/icu"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
+	"github.com/paketo-buildpacks/icu/icu"
 )
 
 func main() {
