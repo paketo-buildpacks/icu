@@ -1,6 +1,7 @@
 .DS_Store
 .idea
-.bin
+/.bin
 /*.tgz
 icu-cnb_*
 /bin/
+/build
