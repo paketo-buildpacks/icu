@@ -14,7 +14,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func testDefault(t *testing.T, context spec.G, it spec.S) {
+func testOffline(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect = NewWithT(t).Expect
 		pack   occam.Pack
@@ -26,7 +26,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		docker = occam.NewDocker()
 	})
 
-	context("when building a simple app", func() {
+	context("when offline", func() {
 		var (
 			image     occam.Image
 			container occam.Container
@@ -56,9 +56,10 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err = pack.WithNoColor().Build.
 				WithNoPull().
 				WithBuildpacks(
-					buildpack,
+					offlineBuildpack,
 					buildPlanBuildpack,
 				).
+				WithNetwork("none").
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
 
