@@ -1,0 +1,5 @@
+[[requires]]
+  name = "icu"
+
+  [requires.metadata]
+    launch = true
