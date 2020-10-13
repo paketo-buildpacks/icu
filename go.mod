@@ -8,8 +8,7 @@ require (
 	github.com/buildpack/libbuildpack v1.25.11
 	github.com/cloudfoundry/libcfbuildpack v1.91.23
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
-	github.com/onsi/gomega v1.10.2
+	github.com/onsi/gomega v1.10.3
 	github.com/paketo-buildpacks/occam v0.0.18
 	github.com/sclevine/spec v1.4.0
-	golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1 // indirect
 )
