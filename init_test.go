@@ -11,5 +11,7 @@ func TestUnitIcu(t *testing.T) {
 	suite := spec.New("icu", spec.Report(report.Terminal{}), spec.Parallel())
 	suite("Build", testBuild)
 	suite("Detect", testDetect)
+	suite("ICULayerArranger", testICULayerArranger)
+	suite("PlanEntryResolver", testPlanEntryResolver)
 	suite.Run(t)
 }

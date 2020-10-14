@@ -1,15 +1,18 @@
 package icu_test
 
 import (
+	"bytes"
 	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	icu "github.com/paketo-buildpacks/icu"
 	"github.com/paketo-buildpacks/icu/fakes"
 	"github.com/paketo-buildpacks/packit"
+	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/postal"
 	"github.com/sclevine/spec"
 
@@ -27,6 +30,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		entryResolver     *fakes.EntryResolver
 		dependencyManager *fakes.DependencyManager
 		layerArranger     *fakes.LayerArranger
+
+		buffer *bytes.Buffer
+
+		timestamp time.Time
 
 		build packit.BuildFunc
 	)
@@ -59,7 +66,15 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		layerArranger = &fakes.LayerArranger{}
 
-		build = icu.Build(entryResolver, dependencyManager, layerArranger)
+		buffer = bytes.NewBuffer(nil)
+		logEmitter := icu.NewLogEmitter(buffer)
+
+		timestamp = time.Now()
+		clock := chronos.NewClock(func() time.Time {
+			return timestamp
+		})
+
+		build = icu.Build(entryResolver, dependencyManager, layerArranger, clock, logEmitter)
 	})
 
 	it.After(func() {

@@ -2,8 +2,10 @@ package icu
 
 import (
 	"path/filepath"
+	"time"
 
 	"github.com/paketo-buildpacks/packit"
+	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/postal"
 )
 
@@ -23,13 +25,20 @@ type LayerArranger interface {
 	Arrange(path string) error
 }
 
-func Build(entryResolver EntryResolver, dependencyManager DependencyManager, layerArranger LayerArranger) packit.BuildFunc {
+func Build(entryResolver EntryResolver,
+	dependencyManager DependencyManager,
+	layerArranger LayerArranger,
+	clock chronos.Clock,
+	logger LogEmitter,
+) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
-
+		logger.Title("%s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
 		icuLayer, err := context.Layers.Get("icu")
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
+
+		logger.Process("Executing build process")
 
 		err = icuLayer.Reset()
 		if err != nil {
@@ -39,7 +48,7 @@ func Build(entryResolver EntryResolver, dependencyManager DependencyManager, lay
 		icuEntry := entryResolver.Resolve(context.Plan.Entries)
 
 		icuLayer.Build = icuEntry.Metadata["build"] == true
-		icuLayer.Cache = icuEntry.Metadata["cache"] == true
+		icuLayer.Cache = icuEntry.Metadata["build"] == true
 		icuLayer.Launch = icuEntry.Metadata["launch"] == true
 
 		dep, err := dependencyManager.Resolve(
@@ -52,11 +61,20 @@ func Build(entryResolver EntryResolver, dependencyManager DependencyManager, lay
 			return packit.BuildResult{}, err
 		}
 
-		err = dependencyManager.Install(dep, context.CNBPath, icuLayer.Path)
+		logger.Subprocess("Installing ICU")
+
+		duration, err := clock.Measure(func() error {
+			return dependencyManager.Install(dep, context.CNBPath, icuLayer.Path)
+		})
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
+		logger.Action("Completed in %s", duration.Round(time.Millisecond))
+		logger.Break()
+
+		// LayerArranger is a stop gap until we can get the dependency artifact
+		// restructured to remove the top two directories
 		err = layerArranger.Arrange(icuLayer.Path)
 		if err != nil {
 			return packit.BuildResult{}, err
