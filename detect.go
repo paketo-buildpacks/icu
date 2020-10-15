@@ -8,7 +8,7 @@ func Detect() packit.DetectFunc {
 			Plan: packit.BuildPlan{
 				Provides: []packit.BuildPlanProvision{
 					{
-						Name: "icu",
+						Name: ICUDependency,
 					},
 				},
 			},

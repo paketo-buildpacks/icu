@@ -106,9 +106,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(result).To(Equal(packit.BuildResult{
 			Plan: packit.BuildpackPlan{
 				Entries: []packit.BuildpackPlanEntry{
-					{
-						Name: "icu",
-					},
+					{Name: "icu"},
 				},
 			},
 			Layers: []packit.Layer{
@@ -121,6 +119,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					Build:     false,
 					Launch:    false,
 					Cache:     false,
+					Metadata: map[string]interface{}{
+						icu.DependencyCacheKey: "icu-dependency-sha",
+						"built_at":             timestamp.Format(time.RFC3339Nano),
+					},
 				},
 			},
 		}))
@@ -185,9 +187,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(result).To(Equal(packit.BuildResult{
 				Plan: packit.BuildpackPlan{
 					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-						},
+						{Name: "icu"},
 					},
 				},
 				Layers: []packit.Layer{
@@ -200,6 +200,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 						Build:     true,
 						Launch:    true,
 						Cache:     true,
+						Metadata: map[string]interface{}{
+							icu.DependencyCacheKey: "icu-dependency-sha",
+							"built_at":             timestamp.Format(time.RFC3339Nano),
+						},
 					},
 				},
 			}))

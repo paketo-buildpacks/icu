@@ -33,14 +33,7 @@ func Build(entryResolver EntryResolver,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		logger.Title("%s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
-		icuLayer, err := context.Layers.Get("icu")
-		if err != nil {
-			return packit.BuildResult{}, err
-		}
-
-		logger.Process("Executing build process")
-
-		err = icuLayer.Reset()
+		icuLayer, err := context.Layers.Get(ICULayerName)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
@@ -57,6 +50,24 @@ func Build(entryResolver EntryResolver,
 			"*",
 			context.Stack,
 		)
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		cachedSHA, ok := icuLayer.Metadata[DependencyCacheKey].(string)
+		if ok && cachedSHA == dep.SHA256 {
+			logger.Process("Reusing cached layer %s", icuLayer.Path)
+			logger.Break()
+
+			return packit.BuildResult{
+				Plan:   context.Plan,
+				Layers: []packit.Layer{icuLayer},
+			}, nil
+		}
+
+		logger.Process("Executing build process")
+
+		err = icuLayer.Reset()
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
@@ -78,6 +89,11 @@ func Build(entryResolver EntryResolver,
 		err = layerArranger.Arrange(icuLayer.Path)
 		if err != nil {
 			return packit.BuildResult{}, err
+		}
+
+		icuLayer.Metadata = map[string]interface{}{
+			DependencyCacheKey: dep.SHA256,
+			"built_at":         clock.Now().Format(time.RFC3339Nano),
 		}
 
 		return packit.BuildResult{
