@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/occam"
+	. "github.com/paketo-buildpacks/occam/matchers"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
@@ -62,7 +63,14 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
 
-			Expect(logs).To(ContainSubstring(buildpackInfo.Buildpack.Name))
+			Expect(logs.String()).To(ContainSubstring(buildpackInfo.Buildpack.Name))
+			Expect(logs).To(ContainLines(
+				MatchRegexp(fmt.Sprintf(`%s \d+\.\d+\.\d+`, buildpackInfo.Buildpack.Name)),
+				"  Executing build process",
+				MatchRegexp(`    Installing ICU`),
+				MatchRegexp(`      Completed in ([0-9]*(\.[0-9]*)?[a-z]+)+`),
+			))
+
 			container, err = docker.Container.Run.
 				WithCommand(fmt.Sprintf("icuinfo && test -f /layers/%s/icu/lib/libicudata.so && echo 'libicudata.so exists' && sleep infinity",
 					strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))).

@@ -2,9 +2,7 @@ package integration_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"testing"
 	"time"
@@ -53,10 +51,15 @@ func TestIntegration(t *testing.T) {
 
 	buildpackStore := occam.NewBuildpackStore()
 
-	buildpack, err = Package(root, "1.2.3", false)
+	buildpack, err = buildpackStore.Get.
+		WithVersion("1.2.3").
+		Execute(root)
 	Expect(err).NotTo(HaveOccurred())
 
-	offlineBuildpack, err = Package(root, "1.2.3", true)
+	offlineBuildpack, err = buildpackStore.Get.
+		WithOfflineDependencies().
+		WithVersion("1.2.3").
+		Execute(root)
 	Expect(err).NotTo(HaveOccurred())
 
 	buildPlanBuildpack, err = buildpackStore.Get.
@@ -68,35 +71,6 @@ func TestIntegration(t *testing.T) {
 	suite := spec.New("Integration", spec.Report(report.Terminal{}), spec.Parallel())
 	suite("Default", testDefault)
 	suite("Offline", testOffline)
+	suite("RebuildLayerReuse", testRebuildLayerReuse)
 	suite.Run(t)
-}
-
-func Package(root, version string, cached bool) (string, error) {
-	var cmd *exec.Cmd
-
-	dir, err := filepath.Abs("./..")
-	if err != nil {
-		return "", err
-	}
-
-	bpPath := filepath.Join(root, "artifact")
-	if cached {
-		cmd = exec.Command(filepath.Join(dir, ".bin", "packager"), "--archive", "--version", version, fmt.Sprintf("%s-cached", bpPath))
-	} else {
-		cmd = exec.Command(filepath.Join(dir, ".bin", "packager"), "--archive", "--uncached", "--version", version, bpPath)
-	}
-
-	cmd.Env = append(os.Environ(), fmt.Sprintf("PACKAGE_DIR=%s", bpPath))
-	cmd.Dir = root
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		return "", err
-	}
-
-	if cached {
-		return fmt.Sprintf("%s-cached.tgz", bpPath), nil
-	}
-
-	return fmt.Sprintf("%s.tgz", bpPath), nil
 }

@@ -63,7 +63,7 @@ func testOffline(t *testing.T, context spec.G, it spec.S) {
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
 
-			Expect(logs).To(ContainSubstring(buildpackInfo.Buildpack.Name))
+			Expect(logs.String()).To(ContainSubstring(buildpackInfo.Buildpack.Name))
 			container, err = docker.Container.Run.
 				WithCommand(fmt.Sprintf("icuinfo && test -f /layers/%s/icu/lib/libicudata.so && echo 'libicudata.so exists' && sleep infinity",
 					strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))).
