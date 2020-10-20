@@ -8,7 +8,7 @@ require (
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/onsi/gomega v1.10.3
 	github.com/paketo-buildpacks/occam v0.0.19
-	github.com/paketo-buildpacks/packit v0.2.8
+	github.com/paketo-buildpacks/packit v0.3.0
 	github.com/sclevine/spec v1.4.0
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
 	golang.org/x/sys v0.0.0-20201013081832-0aaa2718063a // indirect
