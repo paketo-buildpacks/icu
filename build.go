@@ -40,10 +40,6 @@ func Build(entryResolver EntryResolver,
 
 		icuEntry := entryResolver.Resolve(context.Plan.Entries)
 
-		icuLayer.Build = icuEntry.Metadata["build"] == true
-		icuLayer.Cache = icuEntry.Metadata["build"] == true
-		icuLayer.Launch = icuEntry.Metadata["launch"] == true
-
 		dep, err := dependencyManager.Resolve(
 			filepath.Join(context.CNBPath, "buildpack.toml"),
 			icuEntry.Name,
@@ -67,10 +63,14 @@ func Build(entryResolver EntryResolver,
 
 		logger.Process("Executing build process")
 
-		err = icuLayer.Reset()
+		icuLayer, err = icuLayer.Reset()
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
+
+		icuLayer.Build = icuEntry.Metadata["build"] == true
+		icuLayer.Cache = icuEntry.Metadata["build"] == true
+		icuLayer.Launch = icuEntry.Metadata["launch"] == true
 
 		logger.Subprocess("Installing ICU")
 
