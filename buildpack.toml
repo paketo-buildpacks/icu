@@ -1,10 +1,10 @@
 api = "0.2"
 
 [buildpack]
+  homepage = "https://github.com/paketo-buildpacks/icu"
   id = "paketo-buildpacks/icu"
   name = "Paketo ICU Buildpack"
   version = "{{ .Version }}"
-  homepage = "https://github.com/paketo-buildpacks/icu"
 
 [metadata]
   include-files = ["bin/run", "bin/build", "bin/detect", "buildpack.toml"]
