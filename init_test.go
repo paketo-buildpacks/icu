@@ -12,6 +12,5 @@ func TestUnitIcu(t *testing.T) {
 	suite("Build", testBuild)
 	suite("Detect", testDetect)
 	suite("ICULayerArranger", testICULayerArranger)
-	suite("PlanEntryResolver", testPlanEntryResolver)
 	suite.Run(t)
 }

@@ -7,17 +7,20 @@ import (
 	"github.com/paketo-buildpacks/packit"
 	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/postal"
+	"github.com/paketo-buildpacks/packit/scribe"
 )
 
 //go:generate faux --interface EntryResolver --output fakes/entry_resolver.go
 type EntryResolver interface {
-	Resolve([]packit.BuildpackPlanEntry) packit.BuildpackPlanEntry
+	Resolve(name string, entries []packit.BuildpackPlanEntry, priorites []interface{}) (packit.BuildpackPlanEntry, []packit.BuildpackPlanEntry)
+	MergeLayerTypes(name string, entries []packit.BuildpackPlanEntry) (launch, build bool)
 }
 
 //go:generate faux --interface DependencyManager --output fakes/dependency_manager.go
 type DependencyManager interface {
 	Resolve(path, id, version, stack string) (postal.Dependency, error)
 	Install(dependency postal.Dependency, cnbPath, layerPath string) error
+	GenerateBillOfMaterials(dependencies ...postal.Dependency) []packit.BOMEntry
 }
 
 //go:generate faux --interface LayerArranger --output fakes/layer_arranger.go
@@ -29,53 +32,60 @@ func Build(entryResolver EntryResolver,
 	dependencyManager DependencyManager,
 	layerArranger LayerArranger,
 	clock chronos.Clock,
-	logger LogEmitter,
+	logger scribe.Emitter,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		logger.Title("%s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
-		icuLayer, err := context.Layers.Get(ICULayerName)
+		layer, err := context.Layers.Get(ICULayerName)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		icuEntry := entryResolver.Resolve(context.Plan.Entries)
+		entry, _ := entryResolver.Resolve("icu", context.Plan.Entries, nil)
 
-		dep, err := dependencyManager.Resolve(
-			filepath.Join(context.CNBPath, "buildpack.toml"),
-			icuEntry.Name,
-			"*",
-			context.Stack,
-		)
+		dependency, err := dependencyManager.Resolve(filepath.Join(context.CNBPath, "buildpack.toml"), entry.Name, "*", context.Stack)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		cachedSHA, ok := icuLayer.Metadata[DependencyCacheKey].(string)
-		if ok && cachedSHA == dep.SHA256 {
-			logger.Process("Reusing cached layer %s", icuLayer.Path)
+		bom := dependencyManager.GenerateBillOfMaterials(dependency)
+		launch, build := entryResolver.MergeLayerTypes("icu", context.Plan.Entries)
+
+		var launchMetadata packit.LaunchMetadata
+		if launch {
+			launchMetadata.BOM = bom
+		}
+
+		var buildMetadata packit.BuildMetadata
+		if build {
+			buildMetadata.BOM = bom
+		}
+
+		cachedSHA, ok := layer.Metadata[DependencyCacheKey].(string)
+		if ok && cachedSHA == dependency.SHA256 {
+			logger.Process("Reusing cached layer %s", layer.Path)
 			logger.Break()
 
 			return packit.BuildResult{
-				Plan:   context.Plan,
-				Layers: []packit.Layer{icuLayer},
+				Layers: []packit.Layer{layer},
+				Build:  buildMetadata,
+				Launch: launchMetadata,
 			}, nil
 		}
 
 		logger.Process("Executing build process")
 
-		icuLayer, err = icuLayer.Reset()
+		layer, err = layer.Reset()
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		icuLayer.Build = icuEntry.Metadata["build"] == true
-		icuLayer.Cache = icuEntry.Metadata["build"] == true
-		icuLayer.Launch = icuEntry.Metadata["launch"] == true
+		layer.Launch, layer.Build, layer.Cache = launch, build, build
 
 		logger.Subprocess("Installing ICU")
 
 		duration, err := clock.Measure(func() error {
-			return dependencyManager.Install(dep, context.CNBPath, icuLayer.Path)
+			return dependencyManager.Install(dependency, context.CNBPath, layer.Path)
 		})
 		if err != nil {
 			return packit.BuildResult{}, err
@@ -86,19 +96,20 @@ func Build(entryResolver EntryResolver,
 
 		// LayerArranger is a stop gap until we can get the dependency artifact
 		// restructured to remove the top two directories
-		err = layerArranger.Arrange(icuLayer.Path)
+		err = layerArranger.Arrange(layer.Path)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		icuLayer.Metadata = map[string]interface{}{
-			DependencyCacheKey: dep.SHA256,
+		layer.Metadata = map[string]interface{}{
+			DependencyCacheKey: dependency.SHA256,
 			"built_at":         clock.Now().Format(time.RFC3339Nano),
 		}
 
 		return packit.BuildResult{
-			Plan:   context.Plan,
-			Layers: []packit.Layer{icuLayer},
+			Layers: []packit.Layer{layer},
+			Build:  buildMetadata,
+			Launch: launchMetadata,
 		}, nil
 	}
 }
