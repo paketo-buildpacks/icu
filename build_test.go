@@ -14,6 +14,7 @@ import (
 	"github.com/paketo-buildpacks/packit"
 	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/postal"
+	"github.com/paketo-buildpacks/packit/scribe"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
@@ -63,18 +64,30 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			URI:     "icu-dependency-uri",
 			Version: "icu-dependency-version",
 		}
+		dependencyManager.GenerateBillOfMaterialsCall.Returns.BOMEntrySlice = []packit.BOMEntry{
+			{
+				Name: "icu",
+				Metadata: packit.BOMMetadata{
+					Version: "icu-dependency-version",
+					Checksum: packit.BOMChecksum{
+						Algorithm: packit.SHA256,
+						Hash:      "icu-dependency-sha",
+					},
+					URI: "icu-dependency-uri",
+				},
+			},
+		}
 
 		layerArranger = &fakes.LayerArranger{}
 
 		buffer = bytes.NewBuffer(nil)
-		logEmitter := icu.NewLogEmitter(buffer)
 
 		timestamp = time.Now()
 		clock := chronos.NewClock(func() time.Time {
 			return timestamp
 		})
 
-		build = icu.Build(entryResolver, dependencyManager, layerArranger, clock, logEmitter)
+		build = icu.Build(entryResolver, dependencyManager, layerArranger, clock, scribe.NewEmitter(buffer))
 	})
 
 	it.After(func() {
@@ -104,11 +117,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(result).To(Equal(packit.BuildResult{
-			Plan: packit.BuildpackPlan{
-				Entries: []packit.BuildpackPlanEntry{
-					{Name: "icu"},
-				},
-			},
 			Layers: []packit.Layer{
 				{
 					Name:             "icu",
@@ -128,16 +136,26 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			},
 		}))
 
-		Expect(entryResolver.ResolveCall.Receives.BuildpackPlanEntrySlice).To(Equal([]packit.BuildpackPlanEntry{
-			{
-				Name: "icu",
-			},
+		Expect(entryResolver.ResolveCall.Receives.Name).To(Equal("icu"))
+		Expect(entryResolver.ResolveCall.Receives.Entries).To(Equal([]packit.BuildpackPlanEntry{
+			{Name: "icu"},
 		}))
 
 		Expect(dependencyManager.ResolveCall.Receives.Path).To(Equal(filepath.Join(cnbDir, "buildpack.toml")))
 		Expect(dependencyManager.ResolveCall.Receives.Id).To(Equal("icu"))
 		Expect(dependencyManager.ResolveCall.Receives.Version).To(Equal("*"))
 		Expect(dependencyManager.ResolveCall.Receives.Stack).To(Equal("some-stack"))
+
+		Expect(dependencyManager.GenerateBillOfMaterialsCall.Receives.Dependencies).To(Equal([]postal.Dependency{
+			{
+				ID:      "icu",
+				Name:    "icu-dependency-name",
+				SHA256:  "icu-dependency-sha",
+				Stacks:  []string{"some-stack"},
+				URI:     "icu-dependency-uri",
+				Version: "icu-dependency-version",
+			},
+		}))
 
 		Expect(dependencyManager.InstallCall.Receives.Dependency).To(Equal(postal.Dependency{
 			ID:      "icu",
@@ -155,12 +173,13 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	context("when the plan entry requires the dependency during the build and launch phases", func() {
 		it.Before(func() {
+			entryResolver.MergeLayerTypesCall.Returns.Launch = true
+			entryResolver.MergeLayerTypesCall.Returns.Build = true
 			entryResolver.ResolveCall.Returns.BuildpackPlanEntry = packit.BuildpackPlanEntry{
 				Name: "icu",
 				Metadata: map[string]interface{}{
 					"build":  true,
 					"launch": true,
-					"cache":  true,
 				},
 			}
 		})
@@ -178,6 +197,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					Entries: []packit.BuildpackPlanEntry{
 						{
 							Name: "icu",
+							Metadata: map[string]interface{}{
+								"build":  true,
+								"launch": true,
+							},
 						},
 					},
 				},
@@ -186,11 +209,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(result).To(Equal(packit.BuildResult{
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{Name: "icu"},
-					},
-				},
 				Layers: []packit.Layer{
 					{
 						Name:             "icu",
@@ -205,6 +223,36 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 						Metadata: map[string]interface{}{
 							icu.DependencyCacheKey: "icu-dependency-sha",
 							"built_at":             timestamp.Format(time.RFC3339Nano),
+						},
+					},
+				},
+				Build: packit.BuildMetadata{
+					BOM: []packit.BOMEntry{
+						{
+							Name: "icu",
+							Metadata: packit.BOMMetadata{
+								Version: "icu-dependency-version",
+								Checksum: packit.BOMChecksum{
+									Algorithm: packit.SHA256,
+									Hash:      "icu-dependency-sha",
+								},
+								URI: "icu-dependency-uri",
+							},
+						},
+					},
+				},
+				Launch: packit.LaunchMetadata{
+					BOM: []packit.BOMEntry{
+						{
+							Name: "icu",
+							Metadata: packit.BOMMetadata{
+								Version: "icu-dependency-version",
+								Checksum: packit.BOMChecksum{
+									Algorithm: packit.SHA256,
+									Hash:      "icu-dependency-sha",
+								},
+								URI: "icu-dependency-uri",
+							},
 						},
 					},
 				},

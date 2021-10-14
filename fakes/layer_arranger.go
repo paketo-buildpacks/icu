@@ -4,7 +4,7 @@ import "sync"
 
 type LayerArranger struct {
 	ArrangeCall struct {
-		sync.Mutex
+		mutex     sync.Mutex
 		CallCount int
 		Receives  struct {
 			Path string
@@ -17,8 +17,8 @@ type LayerArranger struct {
 }
 
 func (f *LayerArranger) Arrange(param1 string) error {
-	f.ArrangeCall.Lock()
-	defer f.ArrangeCall.Unlock()
+	f.ArrangeCall.mutex.Lock()
+	defer f.ArrangeCall.mutex.Unlock()
 	f.ArrangeCall.CallCount++
 	f.ArrangeCall.Receives.Path = param1
 	if f.ArrangeCall.Stub != nil {
