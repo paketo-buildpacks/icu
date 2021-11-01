@@ -1,22 +1,13 @@
 api = "0.5"
 
 [buildpack]
-  homepage = "https://github.com/paketo-buildpacks/icu"
   id = "paketo-buildpacks/icu"
   name = "Paketo ICU Buildpack"
+  homepage = "https://github.com/paketo-buildpacks/icu"
 
 [metadata]
   include-files = ["bin/run", "bin/build", "bin/detect", "buildpack.toml"]
   pre-package = "./scripts/build.sh"
-
-  [[metadata.dependencies]]
-    id = "icu"
-    sha256 = "dfe2207b65785d61d6fda3a5f1ba33fb08a249abef6596f1e0a24c6bb2bb6c3a"
-    source = "https://github.com/unicode-org/icu/releases/download/release-68-2/icu4c-68_2-src.tgz"
-    source_sha256 = "c79193dee3907a2199b8296a93b52c5cb74332c26f3d167269487680d479d625"
-    stacks = ["io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3"]
-    uri = "https://buildpacks.cloudfoundry.org/dependencies/icu/icu_68.2.0_linux_noarch_any-stack_dfe2207b.tgz"
-    version = "68.2.0"
 
   [[metadata.dependencies]]
     id = "icu"
@@ -26,6 +17,15 @@ api = "0.5"
     stacks = ["io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3"]
     uri = "https://buildpacks.cloudfoundry.org/dependencies/icu/icu_69.1.0_linux_noarch_any-stack_3f89e61d.tgz"
     version = "69.1.0"
+
+  [[metadata.dependencies]]
+    id = "icu"
+    sha256 = "7a9641753886a4d75ea934580de5835ec5c66b9abee2c1c0a2b850b05c83a3d7"
+    source = "https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
+    source_sha256 = "8d205428c17bf13bb535300669ed28b338a157b1c01ae66d31d0d3e2d47c3fd5"
+    stacks = ["io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3"]
+    uri = "https://buildpacks.cloudfoundry.org/dependencies/icu/icu_70.1.0_linux_noarch_any-stack_7a964175.tgz"
+    version = "70.1.0"
 
 [[stacks]]
   id = "io.buildpacks.stacks.bionic"
