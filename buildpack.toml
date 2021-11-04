@@ -27,5 +27,10 @@ api = "0.5"
     uri = "https://buildpacks.cloudfoundry.org/dependencies/icu/icu_69.1.0_linux_noarch_any-stack_3f89e61d.tgz"
     version = "69.1.0"
 
+  [[metadata.dependency-constraints]]
+    constraint = "*"
+    id = "icu"
+    patches = 2
+
 [[stacks]]
   id = "io.buildpacks.stacks.bionic"
