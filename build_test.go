@@ -260,6 +260,72 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 	})
 
+	context("when there is a cache match in the layer metadata", func() {
+		it.Before(func() {
+			err := ioutil.WriteFile(filepath.Join(layersDir, "icu.toml"),
+				[]byte("[metadata]\ndependency-sha = \"icu-dependency-sha\"\n"), 0600)
+			Expect(err).NotTo(HaveOccurred())
+
+			entryResolver.MergeLayerTypesCall.Returns.Launch = false
+			entryResolver.MergeLayerTypesCall.Returns.Build = true
+		})
+
+		it("reuses the layer", func() {
+			result, err := build(packit.BuildContext{
+				WorkingDir: workingDir,
+				CNBPath:    cnbDir,
+				Stack:      "some-stack",
+				BuildpackInfo: packit.BuildpackInfo{
+					Name:    "Some Buildpack",
+					Version: "some-version",
+				},
+				Plan: packit.BuildpackPlan{
+					Entries: []packit.BuildpackPlanEntry{
+						{Name: "icu"},
+					},
+				},
+				Layers: packit.Layers{Path: layersDir},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(result).To(Equal(packit.BuildResult{
+				Layers: []packit.Layer{
+					{
+						Name:             "icu",
+						Path:             filepath.Join(layersDir, "icu"),
+						SharedEnv:        packit.Environment{},
+						BuildEnv:         packit.Environment{},
+						LaunchEnv:        packit.Environment{},
+						ProcessLaunchEnv: map[string]packit.Environment{},
+						Build:            true,
+						Launch:           false,
+						Cache:            true,
+						Metadata: map[string]interface{}{
+							icu.DependencyCacheKey: "icu-dependency-sha",
+						},
+					},
+				},
+				Build: packit.BuildMetadata{
+					BOM: []packit.BOMEntry{
+						{
+							Name: "icu",
+							Metadata: packit.BOMMetadata{
+								Version: "icu-dependency-version",
+								Checksum: packit.BOMChecksum{
+									Algorithm: packit.SHA256,
+									Hash:      "icu-dependency-sha",
+								},
+								URI: "icu-dependency-uri",
+							},
+						},
+					},
+				},
+			}))
+
+			Expect(dependencyManager.InstallCall.CallCount).To(Equal(0))
+		})
+	})
+
 	context("failure cases", func() {
 		context("when the ICU layer cannot be retrieved", func() {
 			it.Before(func() {
