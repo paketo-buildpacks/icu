@@ -66,6 +66,8 @@ func Build(entryResolver EntryResolver,
 			logger.Process("Reusing cached layer %s", layer.Path)
 			logger.Break()
 
+			layer.Launch, layer.Build, layer.Cache = launch, build, build
+
 			return packit.BuildResult{
 				Layers: []packit.Layer{layer},
 				Build:  buildMetadata,
