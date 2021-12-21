@@ -1,9 +1,15 @@
 api = "0.6"
 
 [buildpack]
+  description = "A buildpack for installing the approriate version of ICU (International Components for Unicode)"
   homepage = "https://github.com/paketo-buildpacks/icu"
   id = "paketo-buildpacks/icu"
+  keywords = ["dotnet", "ICU", "unicode"]
   name = "Paketo ICU Buildpack"
+
+  [[buildpack.licenses]]
+    type = "Apache-2.0"
+    uri = "https://github.com/paketo-buildpacks/icu/blob/main/LICENSE"
 
 [metadata]
   include-files = ["bin/run", "bin/build", "bin/detect", "buildpack.toml"]
