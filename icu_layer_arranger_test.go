@@ -1,7 +1,6 @@
 package icu_test
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,12 +23,12 @@ func testICULayerArranger(t *testing.T, context spec.G, it spec.S) {
 
 	it.Before(func() {
 		var err error
-		layerDir, err = ioutil.TempDir("", "layer")
+		layerDir, err = os.MkdirTemp("", "layer")
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(os.MkdirAll(filepath.Join(layerDir, "usr", "local", "bin"), os.ModePerm)).To(Succeed())
-		Expect(ioutil.WriteFile(filepath.Join(layerDir, "usr", "local", "some-file"), nil, os.ModePerm)).To(Succeed())
-		Expect(ioutil.WriteFile(filepath.Join(layerDir, "usr", "local", "bin", "some-other-file"), nil, os.ModePerm)).To(Succeed())
+		Expect(os.WriteFile(filepath.Join(layerDir, "usr", "local", "some-file"), nil, os.ModePerm)).To(Succeed())
+		Expect(os.WriteFile(filepath.Join(layerDir, "usr", "local", "bin", "some-other-file"), nil, os.ModePerm)).To(Succeed())
 
 		arranger = icu.NewICULayerArranger()
 	})
@@ -77,7 +76,7 @@ func testICULayerArranger(t *testing.T, context spec.G, it spec.S) {
 			context("when copying fails", func() {
 				it.Before(func() {
 					Expect(os.MkdirAll(filepath.Join(layerDir, "bin"), os.ModePerm)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(layerDir, "bin", "some-other-file"), nil, os.ModePerm)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(layerDir, "bin", "some-other-file"), nil, os.ModePerm)).To(Succeed())
 				})
 				it("returns an error", func() {
 					err := arranger.Arrange(layerDir)
