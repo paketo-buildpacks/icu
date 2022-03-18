@@ -3,7 +3,6 @@ package icu_test
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -11,10 +10,13 @@ import (
 
 	icu "github.com/paketo-buildpacks/icu"
 	"github.com/paketo-buildpacks/icu/fakes"
-	"github.com/paketo-buildpacks/packit"
-	"github.com/paketo-buildpacks/packit/chronos"
-	"github.com/paketo-buildpacks/packit/postal"
-	"github.com/paketo-buildpacks/packit/scribe"
+	"github.com/paketo-buildpacks/packit/v2"
+	"github.com/paketo-buildpacks/packit/v2/chronos"
+
+	//nolint Ignore SA1019, informed usage of deprecated package
+	"github.com/paketo-buildpacks/packit/v2/paketosbom"
+	"github.com/paketo-buildpacks/packit/v2/postal"
+	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
@@ -41,13 +43,13 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	it.Before(func() {
 		var err error
-		layersDir, err = ioutil.TempDir("", "layers")
+		layersDir, err = os.MkdirTemp("", "layers")
 		Expect(err).NotTo(HaveOccurred())
 
-		cnbDir, err = ioutil.TempDir("", "cnb")
+		cnbDir, err = os.MkdirTemp("", "cnb")
 		Expect(err).NotTo(HaveOccurred())
 
-		workingDir, err = ioutil.TempDir("", "working-dir")
+		workingDir, err = os.MkdirTemp("", "working-dir")
 		Expect(err).NotTo(HaveOccurred())
 
 		entryResolver = &fakes.EntryResolver{}
@@ -67,10 +69,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		dependencyManager.GenerateBillOfMaterialsCall.Returns.BOMEntrySlice = []packit.BOMEntry{
 			{
 				Name: "icu",
-				Metadata: packit.BOMMetadata{
+				Metadata: paketosbom.BOMMetadata{
 					Version: "icu-dependency-version",
-					Checksum: packit.BOMChecksum{
-						Algorithm: packit.SHA256,
+					Checksum: paketosbom.BOMChecksum{
+						Algorithm: paketosbom.SHA256,
 						Hash:      "icu-dependency-sha",
 					},
 					URI: "icu-dependency-uri",
@@ -105,6 +107,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				Name:    "Some Buildpack",
 				Version: "some-version",
 			},
+			Platform: packit.Platform{Path: "platform"},
 			Plan: packit.BuildpackPlan{
 				Entries: []packit.BuildpackPlanEntry{
 					{
@@ -157,7 +160,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			},
 		}))
 
-		Expect(dependencyManager.InstallCall.Receives.Dependency).To(Equal(postal.Dependency{
+		Expect(dependencyManager.DeliverCall.Receives.Dependency).To(Equal(postal.Dependency{
 			ID:      "icu",
 			Name:    "icu-dependency-name",
 			SHA256:  "icu-dependency-sha",
@@ -165,8 +168,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			URI:     "icu-dependency-uri",
 			Version: "icu-dependency-version",
 		}))
-		Expect(dependencyManager.InstallCall.Receives.CnbPath).To(Equal(cnbDir))
-		Expect(dependencyManager.InstallCall.Receives.LayerPath).To(Equal(filepath.Join(layersDir, "icu")))
+		Expect(dependencyManager.DeliverCall.Receives.CnbPath).To(Equal(cnbDir))
+		Expect(dependencyManager.DeliverCall.Receives.LayerPath).To(Equal(filepath.Join(layersDir, "icu")))
+		Expect(dependencyManager.DeliverCall.Receives.PlatformPath).To(Equal("platform"))
 
 		Expect(layerArranger.ArrangeCall.Receives.Path).To(Equal(filepath.Join(layersDir, "icu")))
 	})
@@ -230,10 +234,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					BOM: []packit.BOMEntry{
 						{
 							Name: "icu",
-							Metadata: packit.BOMMetadata{
+							Metadata: paketosbom.BOMMetadata{
 								Version: "icu-dependency-version",
-								Checksum: packit.BOMChecksum{
-									Algorithm: packit.SHA256,
+								Checksum: paketosbom.BOMChecksum{
+									Algorithm: paketosbom.SHA256,
 									Hash:      "icu-dependency-sha",
 								},
 								URI: "icu-dependency-uri",
@@ -245,10 +249,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					BOM: []packit.BOMEntry{
 						{
 							Name: "icu",
-							Metadata: packit.BOMMetadata{
+							Metadata: paketosbom.BOMMetadata{
 								Version: "icu-dependency-version",
-								Checksum: packit.BOMChecksum{
-									Algorithm: packit.SHA256,
+								Checksum: paketosbom.BOMChecksum{
+									Algorithm: paketosbom.SHA256,
 									Hash:      "icu-dependency-sha",
 								},
 								URI: "icu-dependency-uri",
@@ -262,7 +266,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	context("when there is a cache match in the layer metadata", func() {
 		it.Before(func() {
-			err := ioutil.WriteFile(filepath.Join(layersDir, "icu.toml"),
+			err := os.WriteFile(filepath.Join(layersDir, "icu.toml"),
 				[]byte("[metadata]\ndependency-sha = \"icu-dependency-sha\"\n"), 0600)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -309,10 +313,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					BOM: []packit.BOMEntry{
 						{
 							Name: "icu",
-							Metadata: packit.BOMMetadata{
+							Metadata: paketosbom.BOMMetadata{
 								Version: "icu-dependency-version",
-								Checksum: packit.BOMChecksum{
-									Algorithm: packit.SHA256,
+								Checksum: paketosbom.BOMChecksum{
+									Algorithm: paketosbom.SHA256,
 									Hash:      "icu-dependency-sha",
 								},
 								URI: "icu-dependency-uri",
@@ -322,14 +326,14 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				},
 			}))
 
-			Expect(dependencyManager.InstallCall.CallCount).To(Equal(0))
+			Expect(dependencyManager.DeliverCall.CallCount).To(Equal(0))
 		})
 	})
 
 	context("failure cases", func() {
 		context("when the ICU layer cannot be retrieved", func() {
 			it.Before(func() {
-				err := ioutil.WriteFile(filepath.Join(layersDir, "icu.toml"), nil, 0000)
+				err := os.WriteFile(filepath.Join(layersDir, "icu.toml"), nil, 0000)
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -406,7 +410,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	context("when the dependencyManager Install fails", func() {
 		it.Before(func() {
-			dependencyManager.InstallCall.Returns.Error = errors.New("failed to install dependency")
+			dependencyManager.DeliverCall.Returns.Error = errors.New("failed to install dependency")
 		})
 
 		it("fails with the error", func() {

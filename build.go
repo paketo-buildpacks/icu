@@ -4,10 +4,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/paketo-buildpacks/packit"
-	"github.com/paketo-buildpacks/packit/chronos"
-	"github.com/paketo-buildpacks/packit/postal"
-	"github.com/paketo-buildpacks/packit/scribe"
+	"github.com/paketo-buildpacks/packit/v2"
+	"github.com/paketo-buildpacks/packit/v2/chronos"
+	"github.com/paketo-buildpacks/packit/v2/postal"
+	"github.com/paketo-buildpacks/packit/v2/scribe"
 )
 
 //go:generate faux --interface EntryResolver --output fakes/entry_resolver.go
@@ -19,7 +19,7 @@ type EntryResolver interface {
 //go:generate faux --interface DependencyManager --output fakes/dependency_manager.go
 type DependencyManager interface {
 	Resolve(path, id, version, stack string) (postal.Dependency, error)
-	Install(dependency postal.Dependency, cnbPath, layerPath string) error
+	Deliver(dependency postal.Dependency, cnbPath, layerPath, platformPath string) error
 	GenerateBillOfMaterials(dependencies ...postal.Dependency) []packit.BOMEntry
 }
 
@@ -87,7 +87,7 @@ func Build(entryResolver EntryResolver,
 		logger.Subprocess("Installing ICU")
 
 		duration, err := clock.Measure(func() error {
-			return dependencyManager.Install(dependency, context.CNBPath, layer.Path)
+			return dependencyManager.Deliver(dependency, context.CNBPath, layer.Path, context.Platform.Path)
 		})
 		if err != nil {
 			return packit.BuildResult{}, err
