@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	icu "github.com/paketo-buildpacks/icu"
 	"github.com/paketo-buildpacks/icu/fakes"
@@ -35,8 +34,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		layerArranger     *fakes.LayerArranger
 
 		buffer *bytes.Buffer
-
-		timestamp time.Time
 
 		build packit.BuildFunc
 	)
@@ -84,12 +81,11 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		buffer = bytes.NewBuffer(nil)
 
-		timestamp = time.Now()
-		clock := chronos.NewClock(func() time.Time {
-			return timestamp
-		})
-
-		build = icu.Build(entryResolver, dependencyManager, layerArranger, clock, scribe.NewEmitter(buffer))
+		build = icu.Build(entryResolver,
+			dependencyManager,
+			layerArranger,
+			chronos.DefaultClock,
+			scribe.NewEmitter(buffer))
 	})
 
 	it.After(func() {
@@ -133,7 +129,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					Cache:            false,
 					Metadata: map[string]interface{}{
 						icu.DependencyCacheKey: "icu-dependency-sha",
-						"built_at":             timestamp.Format(time.RFC3339Nano),
 					},
 				},
 			},
@@ -226,7 +221,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 						Cache:            true,
 						Metadata: map[string]interface{}{
 							icu.DependencyCacheKey: "icu-dependency-sha",
-							"built_at":             timestamp.Format(time.RFC3339Nano),
 						},
 					},
 				},
