@@ -16,6 +16,7 @@ file that looks like the following:
   # The name of the ICU dependency is "icu". This value is considered
   # part of the public API for the buildpack and will not change without a plan
   # for deprecation.
+  
   name = "icu"
 
   # The version of the ICU dependency is not required. In the case it
