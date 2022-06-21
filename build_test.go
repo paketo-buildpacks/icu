@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	icu "github.com/paketo-buildpacks/icu"
+	"github.com/paketo-buildpacks/icu"
 	"github.com/paketo-buildpacks/icu/fakes"
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/chronos"
@@ -35,7 +35,8 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		buffer *bytes.Buffer
 
-		build packit.BuildFunc
+		buildContext packit.BuildContext
+		build        packit.BuildFunc
 	)
 
 	it.Before(func() {
@@ -81,21 +82,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		buffer = bytes.NewBuffer(nil)
 
-		build = icu.Build(entryResolver,
-			dependencyManager,
-			layerArranger,
-			chronos.DefaultClock,
-			scribe.NewEmitter(buffer))
-	})
-
-	it.After(func() {
-		Expect(os.RemoveAll(layersDir)).To(Succeed())
-		Expect(os.RemoveAll(cnbDir)).To(Succeed())
-		Expect(os.RemoveAll(workingDir)).To(Succeed())
-	})
-
-	it("returns a result that includes ICU", func() {
-		result, err := build(packit.BuildContext{
+		buildContext = packit.BuildContext{
 			WorkingDir: workingDir,
 			CNBPath:    cnbDir,
 			Stack:      "some-stack",
@@ -112,7 +99,23 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				},
 			},
 			Layers: packit.Layers{Path: layersDir},
-		})
+		}
+
+		build = icu.Build(entryResolver,
+			dependencyManager,
+			layerArranger,
+			chronos.DefaultClock,
+			scribe.NewEmitter(buffer))
+	})
+
+	it.After(func() {
+		Expect(os.RemoveAll(layersDir)).To(Succeed())
+		Expect(os.RemoveAll(cnbDir)).To(Succeed())
+		Expect(os.RemoveAll(workingDir)).To(Succeed())
+	})
+
+	it("returns a result that includes ICU", func() {
+		result, err := build(buildContext)
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(result).To(Equal(packit.BuildResult{
@@ -181,30 +184,15 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					"launch": true,
 				},
 			}
+
+			buildContext.Plan.Entries[0].Metadata = map[string]interface{}{
+				"build":  true,
+				"launch": true,
+			}
 		})
 
 		it("makes a layer available in those phases", func() {
-			result, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				BuildpackInfo: packit.BuildpackInfo{
-					Name:    "Some Buildpack",
-					Version: "some-version",
-				},
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-							Metadata: map[string]interface{}{
-								"build":  true,
-								"launch": true,
-							},
-						},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			result, err := build(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(result).To(Equal(packit.BuildResult{
@@ -269,21 +257,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("reuses the layer", func() {
-			result, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				BuildpackInfo: packit.BuildpackInfo{
-					Name:    "Some Buildpack",
-					Version: "some-version",
-				},
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{Name: "icu"},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			result, err := build(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(result).To(Equal(packit.BuildResult{
@@ -332,19 +306,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("fails with the error", func() {
-				_, err := build(packit.BuildContext{
-					WorkingDir: workingDir,
-					CNBPath:    cnbDir,
-					Stack:      "some-stack",
-					Plan: packit.BuildpackPlan{
-						Entries: []packit.BuildpackPlanEntry{
-							{
-								Name: "icu",
-							},
-						},
-					},
-					Layers: packit.Layers{Path: layersDir},
-				})
+				_, err := build(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("failed to parse layer content metadata")))
 			})
 		})
@@ -360,19 +322,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(packit.BuildContext{
-					WorkingDir: workingDir,
-					CNBPath:    cnbDir,
-					Stack:      "some-stack",
-					Plan: packit.BuildpackPlan{
-						Entries: []packit.BuildpackPlanEntry{
-							{
-								Name: "icu",
-							},
-						},
-					},
-					Layers: packit.Layers{Path: layersDir},
-				})
+				_, err := build(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("could not remove file")))
 			})
 
@@ -384,19 +334,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("fails with the error", func() {
-				_, err := build(packit.BuildContext{
-					WorkingDir: workingDir,
-					CNBPath:    cnbDir,
-					Stack:      "some-stack",
-					Plan: packit.BuildpackPlan{
-						Entries: []packit.BuildpackPlanEntry{
-							{
-								Name: "icu",
-							},
-						},
-					},
-					Layers: packit.Layers{Path: layersDir},
-				})
+				_, err := build(buildContext)
 				Expect(err).To(MatchError("failed to resolve dependency"))
 			})
 		})
@@ -408,19 +346,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("fails with the error", func() {
-			_, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-						},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			_, err := build(buildContext)
 			Expect(err).To(MatchError("failed to install dependency"))
 		})
 	})
@@ -431,19 +357,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("fails with the error", func() {
-			_, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-						},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			_, err := build(buildContext)
 			Expect(err).To(MatchError("failed to arrange layer"))
 		})
 	})
