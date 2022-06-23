@@ -8,6 +8,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/draft"
 	"github.com/paketo-buildpacks/packit/v2/postal"
+	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 )
 
@@ -23,8 +24,14 @@ type LayerArranger interface {
 	Arrange(path string) error
 }
 
+//go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
+type SBOMGenerator interface {
+	GenerateFromDependency(dependency postal.Dependency, dir string) (sbom.SBOM, error)
+}
+
 func Build(dependencyManager DependencyManager,
 	layerArranger LayerArranger,
+	sbomGenerator SBOMGenerator,
 	clock chronos.Clock,
 	logger scribe.Emitter,
 ) packit.BuildFunc {
@@ -94,6 +101,25 @@ func Build(dependencyManager DependencyManager,
 		// LayerArranger is a stop gap until we can get the dependency artifact
 		// restructured to remove the top two directories
 		err = layerArranger.Arrange(layer.Path)
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		logger.GeneratingSBOM(layer.Path)
+		var sbomContent sbom.SBOM
+		duration, err = clock.Measure(func() error {
+			sbomContent, err = sbomGenerator.GenerateFromDependency(dependency, layer.Path)
+			return err
+		})
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		logger.Action("Completed in %s", duration.Round(time.Millisecond))
+		logger.Break()
+
+		logger.FormattingSBOM(context.BuildpackInfo.SBOMFormats...)
+		layer.SBOM, err = sbomContent.InFormats(context.BuildpackInfo.SBOMFormats...)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
