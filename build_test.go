@@ -7,10 +7,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	icu "github.com/paketo-buildpacks/icu"
+	"github.com/paketo-buildpacks/icu"
 	"github.com/paketo-buildpacks/icu/fakes"
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/chronos"
+	"github.com/paketo-buildpacks/packit/v2/sbom"
 
 	//nolint Ignore SA1019, informed usage of deprecated package
 	"github.com/paketo-buildpacks/packit/v2/paketosbom"
@@ -29,13 +30,14 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		workingDir string
 		cnbDir     string
 
-		entryResolver     *fakes.EntryResolver
 		dependencyManager *fakes.DependencyManager
 		layerArranger     *fakes.LayerArranger
+		sbomGenerator     *fakes.SBOMGenerator
 
 		buffer *bytes.Buffer
 
-		build packit.BuildFunc
+		buildContext packit.BuildContext
+		build        packit.BuildFunc
 	)
 
 	it.Before(func() {
@@ -48,11 +50,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		workingDir, err = os.MkdirTemp("", "working-dir")
 		Expect(err).NotTo(HaveOccurred())
-
-		entryResolver = &fakes.EntryResolver{}
-		entryResolver.ResolveCall.Returns.BuildpackPlanEntry = packit.BuildpackPlanEntry{
-			Name: "icu",
-		}
 
 		dependencyManager = &fakes.DependencyManager{}
 		dependencyManager.ResolveCall.Returns.Dependency = postal.Dependency{
@@ -81,9 +78,33 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		buffer = bytes.NewBuffer(nil)
 
-		build = icu.Build(entryResolver,
+		buildContext = packit.BuildContext{
+			WorkingDir: workingDir,
+			CNBPath:    cnbDir,
+			Stack:      "some-stack",
+			BuildpackInfo: packit.BuildpackInfo{
+				Name:        "Some Buildpack",
+				Version:     "some-version",
+				SBOMFormats: []string{sbom.CycloneDXFormat, sbom.SPDXFormat},
+			},
+			Platform: packit.Platform{Path: "platform"},
+			Plan: packit.BuildpackPlan{
+				Entries: []packit.BuildpackPlanEntry{
+					{
+						Name: "icu",
+					},
+				},
+			},
+			Layers: packit.Layers{Path: layersDir},
+		}
+
+		sbomGenerator = &fakes.SBOMGenerator{}
+		sbomGenerator.GenerateFromDependencyCall.Returns.SBOM = sbom.SBOM{}
+
+		build = icu.Build(
 			dependencyManager,
 			layerArranger,
+			sbomGenerator,
 			chronos.DefaultClock,
 			scribe.NewEmitter(buffer))
 	})
@@ -95,48 +116,31 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	it("returns a result that includes ICU", func() {
-		result, err := build(packit.BuildContext{
-			WorkingDir: workingDir,
-			CNBPath:    cnbDir,
-			Stack:      "some-stack",
-			BuildpackInfo: packit.BuildpackInfo{
-				Name:    "Some Buildpack",
-				Version: "some-version",
-			},
-			Platform: packit.Platform{Path: "platform"},
-			Plan: packit.BuildpackPlan{
-				Entries: []packit.BuildpackPlanEntry{
-					{
-						Name: "icu",
-					},
-				},
-			},
-			Layers: packit.Layers{Path: layersDir},
-		})
+		result, err := build(buildContext)
 		Expect(err).NotTo(HaveOccurred())
 
-		Expect(result).To(Equal(packit.BuildResult{
-			Layers: []packit.Layer{
-				{
-					Name:             "icu",
-					Path:             filepath.Join(layersDir, "icu"),
-					SharedEnv:        packit.Environment{},
-					BuildEnv:         packit.Environment{},
-					LaunchEnv:        packit.Environment{},
-					ProcessLaunchEnv: map[string]packit.Environment{},
-					Build:            false,
-					Launch:           false,
-					Cache:            false,
-					Metadata: map[string]interface{}{
-						icu.DependencyCacheKey: "icu-dependency-sha",
-					},
-				},
-			},
+		Expect(result.Layers).To(HaveLen(1))
+		layer := result.Layers[0]
+
+		Expect(layer.Name).To(Equal("icu"))
+		Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
+		Expect(layer.Metadata).To(Equal(map[string]interface{}{
+			"dependency-sha": "icu-dependency-sha",
 		}))
 
-		Expect(entryResolver.ResolveCall.Receives.Name).To(Equal("icu"))
-		Expect(entryResolver.ResolveCall.Receives.Entries).To(Equal([]packit.BuildpackPlanEntry{
-			{Name: "icu"},
+		Expect(layer.Build).To(BeFalse())
+		Expect(layer.Launch).To(BeFalse())
+		Expect(layer.Cache).To(BeFalse())
+
+		Expect(layer.SBOM.Formats()).To(Equal([]packit.SBOMFormat{
+			{
+				Extension: sbom.Format(sbom.CycloneDXFormat).Extension(),
+				Content:   sbom.NewFormattedReader(sbom.SBOM{}, sbom.CycloneDXFormat),
+			},
+			{
+				Extension: sbom.Format(sbom.SPDXFormat).Extension(),
+				Content:   sbom.NewFormattedReader(sbom.SBOM{}, sbom.SPDXFormat),
+			},
 		}))
 
 		Expect(dependencyManager.ResolveCall.Receives.Path).To(Equal(filepath.Join(cnbDir, "buildpack.toml")))
@@ -168,92 +172,65 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(dependencyManager.DeliverCall.Receives.PlatformPath).To(Equal("platform"))
 
 		Expect(layerArranger.ArrangeCall.Receives.Path).To(Equal(filepath.Join(layersDir, "icu")))
+
+		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dependency).To(Equal(postal.Dependency{
+			ID:      "icu",
+			Name:    "icu-dependency-name",
+			SHA256:  "icu-dependency-sha",
+			Stacks:  []string{"some-stack"},
+			URI:     "icu-dependency-uri",
+			Version: "icu-dependency-version",
+		}))
+		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dir).To(Equal(filepath.Join(layersDir, "icu")))
 	})
 
 	context("when the plan entry requires the dependency during the build and launch phases", func() {
 		it.Before(func() {
-			entryResolver.MergeLayerTypesCall.Returns.Launch = true
-			entryResolver.MergeLayerTypesCall.Returns.Build = true
-			entryResolver.ResolveCall.Returns.BuildpackPlanEntry = packit.BuildpackPlanEntry{
-				Name: "icu",
-				Metadata: map[string]interface{}{
-					"build":  true,
-					"launch": true,
-				},
+			buildContext.Plan.Entries[0].Metadata = map[string]interface{}{
+				"build":  true,
+				"launch": true,
 			}
 		})
 
 		it("makes a layer available in those phases", func() {
-			result, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				BuildpackInfo: packit.BuildpackInfo{
-					Name:    "Some Buildpack",
-					Version: "some-version",
-				},
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-							Metadata: map[string]interface{}{
-								"build":  true,
-								"launch": true,
-							},
-						},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			result, err := build(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(result).To(Equal(packit.BuildResult{
-				Layers: []packit.Layer{
-					{
-						Name:             "icu",
-						Path:             filepath.Join(layersDir, "icu"),
-						SharedEnv:        packit.Environment{},
-						BuildEnv:         packit.Environment{},
-						LaunchEnv:        packit.Environment{},
-						ProcessLaunchEnv: map[string]packit.Environment{},
-						Build:            true,
-						Launch:           true,
-						Cache:            true,
-						Metadata: map[string]interface{}{
-							icu.DependencyCacheKey: "icu-dependency-sha",
-						},
-					},
+			Expect(result.Layers).To(HaveLen(1))
+			layer := result.Layers[0]
+
+			Expect(layer.Name).To(Equal("icu"))
+			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
+			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+				"dependency-sha": "icu-dependency-sha",
+			}))
+
+			Expect(layer.Build).To(BeTrue())
+			Expect(layer.Launch).To(BeTrue())
+			Expect(layer.Cache).To(BeTrue())
+
+			Expect(result.Build.BOM).To(HaveLen(1))
+			buildBOMEntry := result.Build.BOM[0]
+			Expect(buildBOMEntry.Name).To(Equal("icu"))
+			Expect(buildBOMEntry.Metadata).To(Equal(paketosbom.BOMMetadata{
+				Version: "icu-dependency-version",
+				Checksum: paketosbom.BOMChecksum{
+					Algorithm: paketosbom.SHA256,
+					Hash:      "icu-dependency-sha",
 				},
-				Build: packit.BuildMetadata{
-					BOM: []packit.BOMEntry{
-						{
-							Name: "icu",
-							Metadata: paketosbom.BOMMetadata{
-								Version: "icu-dependency-version",
-								Checksum: paketosbom.BOMChecksum{
-									Algorithm: paketosbom.SHA256,
-									Hash:      "icu-dependency-sha",
-								},
-								URI: "icu-dependency-uri",
-							},
-						},
-					},
+				URI: "icu-dependency-uri",
+			}))
+
+			Expect(result.Launch.BOM).To(HaveLen(1))
+			launchBOMEntry := result.Launch.BOM[0]
+			Expect(launchBOMEntry.Name).To(Equal("icu"))
+			Expect(launchBOMEntry.Metadata).To(Equal(paketosbom.BOMMetadata{
+				Version: "icu-dependency-version",
+				Checksum: paketosbom.BOMChecksum{
+					Algorithm: paketosbom.SHA256,
+					Hash:      "icu-dependency-sha",
 				},
-				Launch: packit.LaunchMetadata{
-					BOM: []packit.BOMEntry{
-						{
-							Name: "icu",
-							Metadata: paketosbom.BOMMetadata{
-								Version: "icu-dependency-version",
-								Checksum: paketosbom.BOMChecksum{
-									Algorithm: paketosbom.SHA256,
-									Hash:      "icu-dependency-sha",
-								},
-								URI: "icu-dependency-uri",
-							},
-						},
-					},
-				},
+				URI: "icu-dependency-uri",
 			}))
 		})
 	})
@@ -264,61 +241,42 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				[]byte("[metadata]\ndependency-sha = \"icu-dependency-sha\"\n"), 0600)
 			Expect(err).NotTo(HaveOccurred())
 
-			entryResolver.MergeLayerTypesCall.Returns.Launch = false
-			entryResolver.MergeLayerTypesCall.Returns.Build = true
+			buildContext.Plan.Entries[0].Metadata = map[string]interface{}{
+				"launch": false,
+				"build":  true,
+			}
 		})
 
 		it("reuses the layer", func() {
-			result, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				BuildpackInfo: packit.BuildpackInfo{
-					Name:    "Some Buildpack",
-					Version: "some-version",
-				},
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{Name: "icu"},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			result, err := build(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(result).To(Equal(packit.BuildResult{
-				Layers: []packit.Layer{
-					{
-						Name:             "icu",
-						Path:             filepath.Join(layersDir, "icu"),
-						SharedEnv:        packit.Environment{},
-						BuildEnv:         packit.Environment{},
-						LaunchEnv:        packit.Environment{},
-						ProcessLaunchEnv: map[string]packit.Environment{},
-						Build:            true,
-						Launch:           false,
-						Cache:            true,
-						Metadata: map[string]interface{}{
-							icu.DependencyCacheKey: "icu-dependency-sha",
-						},
-					},
-				},
-				Build: packit.BuildMetadata{
-					BOM: []packit.BOMEntry{
-						{
-							Name: "icu",
-							Metadata: paketosbom.BOMMetadata{
-								Version: "icu-dependency-version",
-								Checksum: paketosbom.BOMChecksum{
-									Algorithm: paketosbom.SHA256,
-									Hash:      "icu-dependency-sha",
-								},
-								URI: "icu-dependency-uri",
-							},
-						},
-					},
-				},
+			Expect(result.Layers).To(HaveLen(1))
+			layer := result.Layers[0]
+
+			Expect(layer.Name).To(Equal("icu"))
+			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
+			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+				"dependency-sha": "icu-dependency-sha",
 			}))
+
+			Expect(layer.Build).To(BeTrue())
+			Expect(layer.Launch).To(BeFalse())
+			Expect(layer.Cache).To(BeTrue())
+
+			Expect(result.Build.BOM).To(HaveLen(1))
+			buildBOMEntry := result.Build.BOM[0]
+			Expect(buildBOMEntry.Name).To(Equal("icu"))
+			Expect(buildBOMEntry.Metadata).To(Equal(paketosbom.BOMMetadata{
+				Version: "icu-dependency-version",
+				Checksum: paketosbom.BOMChecksum{
+					Algorithm: paketosbom.SHA256,
+					Hash:      "icu-dependency-sha",
+				},
+				URI: "icu-dependency-uri",
+			}))
+
+			Expect(result.Launch.BOM).To(HaveLen(0))
 
 			Expect(dependencyManager.DeliverCall.CallCount).To(Equal(0))
 		})
@@ -332,19 +290,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("fails with the error", func() {
-				_, err := build(packit.BuildContext{
-					WorkingDir: workingDir,
-					CNBPath:    cnbDir,
-					Stack:      "some-stack",
-					Plan: packit.BuildpackPlan{
-						Entries: []packit.BuildpackPlanEntry{
-							{
-								Name: "icu",
-							},
-						},
-					},
-					Layers: packit.Layers{Path: layersDir},
-				})
+				_, err := build(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("failed to parse layer content metadata")))
 			})
 		})
@@ -360,19 +306,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(packit.BuildContext{
-					WorkingDir: workingDir,
-					CNBPath:    cnbDir,
-					Stack:      "some-stack",
-					Plan: packit.BuildpackPlan{
-						Entries: []packit.BuildpackPlanEntry{
-							{
-								Name: "icu",
-							},
-						},
-					},
-					Layers: packit.Layers{Path: layersDir},
-				})
+				_, err := build(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("could not remove file")))
 			})
 
@@ -384,19 +318,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("fails with the error", func() {
-				_, err := build(packit.BuildContext{
-					WorkingDir: workingDir,
-					CNBPath:    cnbDir,
-					Stack:      "some-stack",
-					Plan: packit.BuildpackPlan{
-						Entries: []packit.BuildpackPlanEntry{
-							{
-								Name: "icu",
-							},
-						},
-					},
-					Layers: packit.Layers{Path: layersDir},
-				})
+				_, err := build(buildContext)
 				Expect(err).To(MatchError("failed to resolve dependency"))
 			})
 		})
@@ -408,19 +330,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("fails with the error", func() {
-			_, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-						},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			_, err := build(buildContext)
 			Expect(err).To(MatchError("failed to install dependency"))
 		})
 	})
@@ -431,20 +341,30 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("fails with the error", func() {
-			_, err := build(packit.BuildContext{
-				WorkingDir: workingDir,
-				CNBPath:    cnbDir,
-				Stack:      "some-stack",
-				Plan: packit.BuildpackPlan{
-					Entries: []packit.BuildpackPlanEntry{
-						{
-							Name: "icu",
-						},
-					},
-				},
-				Layers: packit.Layers{Path: layersDir},
-			})
+			_, err := build(buildContext)
 			Expect(err).To(MatchError("failed to arrange layer"))
+		})
+	})
+
+	context("when generating the SBOM returns an error", func() {
+		it.Before(func() {
+			sbomGenerator.GenerateFromDependencyCall.Returns.Error = errors.New("failed to generate SBOM")
+		})
+
+		it("returns an error", func() {
+			_, err := build(buildContext)
+			Expect(err).To(MatchError(ContainSubstring("failed to generate SBOM")))
+		})
+	})
+
+	context("when formatting the SBOM returns an error", func() {
+		it.Before(func() {
+			buildContext.BuildpackInfo.SBOMFormats = []string{"random-format"}
+		})
+
+		it("returns an error", func() {
+			_, err := build(buildContext)
+			Expect(err).To(MatchError("unsupported SBOM format: 'random-format'"))
 		})
 	})
 }

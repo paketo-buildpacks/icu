@@ -1,4 +1,4 @@
-api = "0.6"
+api = "0.8"
 
 [buildpack]
   description = "A buildpack for installing the approriate version of ICU (International Components for Unicode)"
@@ -6,6 +6,7 @@ api = "0.6"
   id = "paketo-buildpacks/icu"
   keywords = ["dotnet", "ICU", "unicode"]
   name = "Paketo ICU Buildpack"
+  sbom-formats = ["application/vnd.cyclonedx+json", "application/spdx+json", "application/vnd.syft+json"]
 
   [[buildpack.licenses]]
     type = "Apache-2.0"
@@ -19,6 +20,7 @@ api = "0.6"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:69.1:*:*:*:*:c\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/c\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\+:*:*"
     id = "icu"
     licenses = ["BSD-3-Clause", "Unicode-TOU"]
+    name = "ICU"
     purl = "pkg:generic/icu@69.1?checksum=4cba7b7acd1d3c42c44bb0c14be6637098c7faf2b330ce876bc5f3b915d09745&download_url=https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-src.tgz"
     sha256 = "9c53e6a14b641d3ce966f0a8817e3805c254ec220c91aabdf0ad8d625ef3b282"
     source = "https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-src.tgz"
@@ -31,6 +33,7 @@ api = "0.6"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:70.1:*:*:*:*:c\\\\/c\\\\+\\\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "Unicode-TOU"]
+    name = "ICU"
     purl = "pkg:generic/icu@70.1?checksum=8d205428c17bf13bb535300669ed28b338a157b1c01ae66d31d0d3e2d47c3fd5&download_url=https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
     sha256 = "bb0e9fde6a7130268f61f433aea746c2a7b72526e912d2c731f2655af620d31c"
     source = "https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"

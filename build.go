@@ -6,15 +6,11 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/chronos"
+	"github.com/paketo-buildpacks/packit/v2/draft"
 	"github.com/paketo-buildpacks/packit/v2/postal"
+	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 )
-
-//go:generate faux --interface EntryResolver --output fakes/entry_resolver.go
-type EntryResolver interface {
-	Resolve(name string, entries []packit.BuildpackPlanEntry, priorites []interface{}) (packit.BuildpackPlanEntry, []packit.BuildpackPlanEntry)
-	MergeLayerTypes(name string, entries []packit.BuildpackPlanEntry) (launch, build bool)
-}
 
 //go:generate faux --interface DependencyManager --output fakes/dependency_manager.go
 type DependencyManager interface {
@@ -28,9 +24,14 @@ type LayerArranger interface {
 	Arrange(path string) error
 }
 
-func Build(entryResolver EntryResolver,
-	dependencyManager DependencyManager,
+//go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
+type SBOMGenerator interface {
+	GenerateFromDependency(dependency postal.Dependency, dir string) (sbom.SBOM, error)
+}
+
+func Build(dependencyManager DependencyManager,
 	layerArranger LayerArranger,
+	sbomGenerator SBOMGenerator,
 	clock chronos.Clock,
 	logger scribe.Emitter,
 ) packit.BuildFunc {
@@ -41,7 +42,8 @@ func Build(entryResolver EntryResolver,
 			return packit.BuildResult{}, err
 		}
 
-		entry, _ := entryResolver.Resolve("icu", context.Plan.Entries, nil)
+		planner := draft.NewPlanner()
+		entry, _ := planner.Resolve("icu", context.Plan.Entries, nil)
 
 		dependency, err := dependencyManager.Resolve(filepath.Join(context.CNBPath, "buildpack.toml"), entry.Name, "*", context.Stack)
 		if err != nil {
@@ -49,7 +51,7 @@ func Build(entryResolver EntryResolver,
 		}
 
 		bom := dependencyManager.GenerateBillOfMaterials(dependency)
-		launch, build := entryResolver.MergeLayerTypes("icu", context.Plan.Entries)
+		launch, build := planner.MergeLayerTypes("icu", context.Plan.Entries)
 
 		var launchMetadata packit.LaunchMetadata
 		if launch {
@@ -99,6 +101,25 @@ func Build(entryResolver EntryResolver,
 		// LayerArranger is a stop gap until we can get the dependency artifact
 		// restructured to remove the top two directories
 		err = layerArranger.Arrange(layer.Path)
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		logger.GeneratingSBOM(layer.Path)
+		var sbomContent sbom.SBOM
+		duration, err = clock.Measure(func() error {
+			sbomContent, err = sbomGenerator.GenerateFromDependency(dependency, layer.Path)
+			return err
+		})
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		logger.Action("Completed in %s", duration.Round(time.Millisecond))
+		logger.Break()
+
+		logger.FormattingSBOM(context.BuildpackInfo.SBOMFormats...)
+		layer.SBOM, err = sbomContent.InFormats(context.BuildpackInfo.SBOMFormats...)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
