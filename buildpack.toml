@@ -25,7 +25,7 @@ api = "0.8"
     sha256 = "9c53e6a14b641d3ce966f0a8817e3805c254ec220c91aabdf0ad8d625ef3b282"
     source = "https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-src.tgz"
     source_sha256 = "4cba7b7acd1d3c42c44bb0c14be6637098c7faf2b330ce876bc5f3b915d09745"
-    stacks = ["io.buildpacks.stacks.bionic"]
+    stacks = ["io.buildpacks.stacks.bionic","io.buildpacks.stacks.jammy"]
     uri = "https://deps.paketo.io/icu/icu_69.1_linux_noarch_bionic_9c53e6a1.tgz"
     version = "69.1.0"
 
@@ -38,7 +38,7 @@ api = "0.8"
     sha256 = "bb0e9fde6a7130268f61f433aea746c2a7b72526e912d2c731f2655af620d31c"
     source = "https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
     source_sha256 = "8d205428c17bf13bb535300669ed28b338a157b1c01ae66d31d0d3e2d47c3fd5"
-    stacks = ["io.buildpacks.stacks.bionic"]
+    stacks = ["io.buildpacks.stacks.bionic","io.buildpacks.stacks.jammy"]
     uri = "https://deps.paketo.io/icu/icu_70.1_linux_noarch_bionic_bb0e9fde.tgz"
     version = "70.1.0"
 
@@ -49,3 +49,5 @@ api = "0.8"
 
 [[stacks]]
   id = "io.buildpacks.stacks.bionic"
+[[stacks]]
+  id = "io.buildpacks.stacks.jammy"
