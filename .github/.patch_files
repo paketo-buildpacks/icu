@@ -7,6 +7,7 @@
 .github/workflows/auto-merge.yml
 .github/workflows/check-pr-labels.yml
 .github/workflows/codeql-analysis.yml
+.github/workflows/go-get-update.yml
 .github/workflows/label-pr.yml
 .github/workflows/lint-yaml.yml
 .github/workflows/lint.yml
@@ -21,5 +22,8 @@ README.md
 scripts/.util/print.sh
 scripts/.util/tools.json
 scripts/.util/tools.sh
+scripts/.util/builders.sh
 scripts/integration.sh
 scripts/unit.sh
+go.mod
+go.sum
