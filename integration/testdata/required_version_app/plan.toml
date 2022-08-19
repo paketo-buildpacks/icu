@@ -1,0 +1,7 @@
+[[requires]]
+  name = "icu"
+
+  [requires.metadata]
+    launch = true
+    version = "70.*"
+    version-source = "dotnet-31"
