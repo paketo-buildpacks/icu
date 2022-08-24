@@ -54,7 +54,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		dependencyManager = &fakes.DependencyManager{}
 		dependencyManager.ResolveCall.Returns.Dependency = postal.Dependency{
 			ID:      "icu",
-			Name:    "icu-dependency-name",
+			Name:    "ICU",
 			SHA256:  "icu-dependency-sha",
 			Stacks:  []string{"some-stack"},
 			URI:     "icu-dependency-uri",
@@ -151,7 +151,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(dependencyManager.GenerateBillOfMaterialsCall.Receives.Dependencies).To(Equal([]postal.Dependency{
 			{
 				ID:      "icu",
-				Name:    "icu-dependency-name",
+				Name:    "ICU",
 				SHA256:  "icu-dependency-sha",
 				Stacks:  []string{"some-stack"},
 				URI:     "icu-dependency-uri",
@@ -161,7 +161,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		Expect(dependencyManager.DeliverCall.Receives.Dependency).To(Equal(postal.Dependency{
 			ID:      "icu",
-			Name:    "icu-dependency-name",
+			Name:    "ICU",
 			SHA256:  "icu-dependency-sha",
 			Stacks:  []string{"some-stack"},
 			URI:     "icu-dependency-uri",
@@ -175,13 +175,54 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dependency).To(Equal(postal.Dependency{
 			ID:      "icu",
-			Name:    "icu-dependency-name",
+			Name:    "ICU",
 			SHA256:  "icu-dependency-sha",
 			Stacks:  []string{"some-stack"},
 			URI:     "icu-dependency-uri",
 			Version: "icu-dependency-version",
 		}))
 		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dir).To(Equal(filepath.Join(layersDir, "icu")))
+	})
+
+	context("when the plan entry requires multiple specific versions", func() {
+		it.Before(func() {
+			buildContext.Plan.Entries = []packit.BuildpackPlanEntry{
+				{
+					Name: "icu",
+					Metadata: map[string]interface{}{
+						"launch":         true,
+						"version":        "70.*",
+						"version-source": "dotnet-31",
+					},
+				},
+				{
+					Name: "icu",
+					Metadata: map[string]interface{}{
+						"launch":         true,
+						"version":        "71.1.*",
+						"version-source": "random-source",
+					},
+				},
+			}
+		})
+
+		it("chooses highest priority (dotnet-31) version source", func() {
+			result, err := build(buildContext)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(result.Layers).To(HaveLen(1))
+			layer := result.Layers[0]
+
+			Expect(layer.Name).To(Equal("icu"))
+			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
+			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+				"dependency-sha": "icu-dependency-sha",
+			}))
+			Expect(dependencyManager.ResolveCall.Receives.Path).To(Equal(filepath.Join(cnbDir, "buildpack.toml")))
+			Expect(dependencyManager.ResolveCall.Receives.Id).To(Equal("icu"))
+			Expect(dependencyManager.ResolveCall.Receives.Version).To(Equal("70.*"))
+			Expect(dependencyManager.ResolveCall.Receives.Stack).To(Equal("some-stack"))
+		})
 	})
 
 	context("when the plan entry requires the dependency during the build and launch phases", func() {

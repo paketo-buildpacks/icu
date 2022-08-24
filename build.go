@@ -37,15 +37,30 @@ func Build(dependencyManager DependencyManager,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		logger.Title("%s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
-		layer, err := context.Layers.Get(ICULayerName)
+		logger.Process("Resolving ICU version")
+
+		planner := draft.NewPlanner()
+		// .NET Core 3.1 is only compatible wit ICU 70.* and below.
+		// The temporary `dotnet-31` version source allows for buildpacks
+		// that require `icu` to request a compatible ICU version when .NET
+		// Core 3.1 is used.
+		entry, allEntries := planner.Resolve("icu", context.Plan.Entries, []interface{}{"dotnet-31"})
+		logger.Candidates(allEntries)
+
+		version, _ := entry.Metadata["version"].(string)
+		if version == "" {
+			version = "*"
+		}
+
+		dependency, err := dependencyManager.Resolve(filepath.Join(context.CNBPath, "buildpack.toml"), entry.Name, version, context.Stack)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		planner := draft.NewPlanner()
-		entry, _ := planner.Resolve("icu", context.Plan.Entries, nil)
+		dependency.Name = "ICU"
+		logger.SelectedDependency(entry, dependency, clock.Now())
 
-		dependency, err := dependencyManager.Resolve(filepath.Join(context.CNBPath, "buildpack.toml"), entry.Name, "*", context.Stack)
+		layer, err := context.Layers.Get(ICULayerName)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}

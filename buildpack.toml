@@ -17,37 +17,41 @@ api = "0.8"
   pre-package = "./scripts/build.sh"
 
   [[metadata.dependencies]]
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:69.1:*:*:*:*:c\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/c\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\+:*:*"
-    id = "icu"
-    licenses = ["BSD-3-Clause", "Unicode-TOU"]
-    name = "ICU"
-    purl = "pkg:generic/icu@69.1?checksum=4cba7b7acd1d3c42c44bb0c14be6637098c7faf2b330ce876bc5f3b915d09745&download_url=https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-src.tgz"
-    sha256 = "9c53e6a14b641d3ce966f0a8817e3805c254ec220c91aabdf0ad8d625ef3b282"
-    source = "https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-src.tgz"
-    source_sha256 = "4cba7b7acd1d3c42c44bb0c14be6637098c7faf2b330ce876bc5f3b915d09745"
-    stacks = ["io.buildpacks.stacks.bionic","io.buildpacks.stacks.jammy"]
-    uri = "https://deps.paketo.io/icu/icu_69.1_linux_noarch_bionic_9c53e6a1.tgz"
-    version = "69.1.0"
-
-  [[metadata.dependencies]]
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:70.1:*:*:*:*:c\\\\/c\\\\+\\\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "Unicode-TOU"]
-    name = "ICU"
     purl = "pkg:generic/icu@70.1?checksum=8d205428c17bf13bb535300669ed28b338a157b1c01ae66d31d0d3e2d47c3fd5&download_url=https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
-    sha256 = "bb0e9fde6a7130268f61f433aea746c2a7b72526e912d2c731f2655af620d31c"
+    sha256 = "de4f152b204c89470f6efd09d5ec18a9474aff6ecc5065ef66d7320a224b15de"
     source = "https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
     source_sha256 = "8d205428c17bf13bb535300669ed28b338a157b1c01ae66d31d0d3e2d47c3fd5"
-    stacks = ["io.buildpacks.stacks.bionic","io.buildpacks.stacks.jammy"]
-    uri = "https://deps.paketo.io/icu/icu_70.1_linux_noarch_bionic_bb0e9fde.tgz"
+    stacks = ["io.buildpacks.stacks.bionic", "io.buildpacks.stacks.jammy"]
+    uri = "https://deps.paketo.io/icu/icu_70.1_linux_noarch_bionic_de4f152b.tgz"
     version = "70.1.0"
 
-  [[metadata.dependency-constraints]]
-    constraint = "*"
+  [[metadata.dependencies]]
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:71.1:*:*:*:*:c\\\\/c\\\\+\\\\+:*:*"
     id = "icu"
-    patches = 2
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    purl = "pkg:generic/icu@71.1?checksum=67a7e6e51f61faf1306b6935333e13b2c48abd8da6d2f46ce6adca24b1e21ebf&download_url=https://github.com/unicode-org/icu/releases/download/release-71-1/icu4c-71_1-src.tgz"
+    sha256 = "69802adb082053cce333a250ed85ebfe25abc4edc756a9b8b312de97b192232b"
+    source = "https://github.com/unicode-org/icu/releases/download/release-71-1/icu4c-71_1-src.tgz"
+    source_sha256 = "67a7e6e51f61faf1306b6935333e13b2c48abd8da6d2f46ce6adca24b1e21ebf"
+    stacks = ["io.buildpacks.stacks.bionic", "io.buildpacks.stacks.jammy"]
+    uri = "https://deps.paketo.io/icu/icu_71.1_linux_noarch_bionic_69802adb.tgz"
+    version = "71.1.0"
+
+  [[metadata.dependency-constraints]]
+    constraint = "70.*"
+    id = "icu"
+    patches = 1
+
+  [[metadata.dependency-constraints]]
+    constraint = ">= 70.*"
+    id = "icu"
+    patches = 1
 
 [[stacks]]
   id = "io.buildpacks.stacks.bionic"
+
 [[stacks]]
   id = "io.buildpacks.stacks.jammy"
