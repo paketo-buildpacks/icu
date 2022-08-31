@@ -5,7 +5,7 @@ api = "0.8"
   homepage = "https://github.com/paketo-buildpacks/icu"
   id = "paketo-buildpacks/icu"
   keywords = ["dotnet", "ICU", "unicode"]
-  name = "Paketo ICU Buildpack"
+  name = "Paketo Buildpack for ICU"
   sbom-formats = ["application/vnd.cyclonedx+json", "application/spdx+json", "application/vnd.syft+json"]
 
   [[buildpack.licenses]]
