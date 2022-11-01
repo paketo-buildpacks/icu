@@ -62,9 +62,13 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 			gw := gzip.NewWriter(buffer)
 			tw := tar.NewWriter(gw)
 
-			licenseFile := "./LICENSE.txt"
+			Expect(tw.WriteHeader(&tar.Header{Name: "some-dir", Mode: 0755, Typeflag: tar.TypeDir})).To(Succeed())
+			_, err := tw.Write(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			licenseFile := "some-dir/LICENSE.txt"
 			Expect(tw.WriteHeader(&tar.Header{Name: licenseFile, Mode: 0755, Size: int64(len(lFile))})).To(Succeed())
-			_, err := tw.Write([]byte(lFile))
+			_, err = tw.Write([]byte(lFile))
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(tw.Close()).To(Succeed())
@@ -85,7 +89,7 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 				case "/shasum512":
 					w.WriteHeader(http.StatusOK)
 					fmt.Fprintln(w, `d4bb1baed99674074f8af024dd159898eddaf4d71bc90f8d95b8448e96aac4b4e8358f755a516bfaf84baa34bf8657dc994459ef3bd72f54496b9ce2b0bd4636  icu4c-72_1-src.zip
-365237c83e7b0b836d933618bb8be9cee018e905b2c01156ef0ae1162cffbdc003ae4082ea9bb85d39f667e875882804c00d90a4280be4486ec81edb2fb64ad6  icu4c-72_1-src.tgz`)
+a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c  icu4c-72_1-src.tgz`)
 
 				case "/bad-shasum":
 					w.WriteHeader(http.StatusOK)
@@ -134,13 +138,13 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
 						Checksum:       "",
 						CPE:            "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
-						PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=365237c83e7b0b836d933618bb8be9cee018e905b2c01156ef0ae1162cffbdc003ae4082ea9bb85d39f667e875882804c00d90a4280be4486ec81edb2fb64ad6&download_url=%s/source", server.URL),
+						PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
 						ID:             "icu",
 						Licenses:       []interface{}{"MIT", "MIT-0"},
 						Name:           "ICU",
 						SHA256:         "",
 						Source:         fmt.Sprintf("%s/source", server.URL),
-						SourceChecksum: "sha512:365237c83e7b0b836d933618bb8be9cee018e905b2c01156ef0ae1162cffbdc003ae4082ea9bb85d39f667e875882804c00d90a4280be4486ec81edb2fb64ad6",
+						SourceChecksum: "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
 						SourceSHA256:   "",
 						Stacks: []string{
 							"io.buildpacks.stacks.jammy",
@@ -156,13 +160,13 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
 						Checksum:       "",
 						CPE:            "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
-						PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=365237c83e7b0b836d933618bb8be9cee018e905b2c01156ef0ae1162cffbdc003ae4082ea9bb85d39f667e875882804c00d90a4280be4486ec81edb2fb64ad6&download_url=%s/source", server.URL),
+						PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
 						ID:             "icu",
 						Licenses:       []interface{}{"MIT", "MIT-0"},
 						Name:           "ICU",
 						SHA256:         "",
 						Source:         fmt.Sprintf("%s/source", server.URL),
-						SourceChecksum: "sha512:365237c83e7b0b836d933618bb8be9cee018e905b2c01156ef0ae1162cffbdc003ae4082ea9bb85d39f667e875882804c00d90a4280be4486ec81edb2fb64ad6",
+						SourceChecksum: "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
 						SourceSHA256:   "",
 						Stacks: []string{
 							"io.buildpacks.stacks.bionic",

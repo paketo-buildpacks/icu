@@ -31,9 +31,13 @@ func testLicense(t *testing.T, context spec.G, it spec.S) {
 			gw := gzip.NewWriter(buffer)
 			tw := tar.NewWriter(gw)
 
-			licenseFile := "./LICENSE.txt"
+			Expect(tw.WriteHeader(&tar.Header{Name: "some-dir", Mode: 0755, Typeflag: tar.TypeDir})).To(Succeed())
+			_, err := tw.Write(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			licenseFile := "some-dir/LICENSE.txt"
 			Expect(tw.WriteHeader(&tar.Header{Name: licenseFile, Mode: 0755, Size: int64(len(lFile))})).To(Succeed())
-			_, err := tw.Write([]byte(lFile))
+			_, err = tw.Write([]byte(lFile))
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(tw.Close()).To(Succeed())

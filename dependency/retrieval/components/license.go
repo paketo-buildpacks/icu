@@ -24,7 +24,7 @@ func GenerateLicenseInformation(url string) ([]interface{}, error) {
 	}
 	defer response.Body.Close()
 
-	err = vacation.NewArchive(response.Body).Decompress(dir)
+	err = vacation.NewArchive(response.Body).StripComponents(1).Decompress(dir)
 	if err != nil {
 		return nil, err
 	}
