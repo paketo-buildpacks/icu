@@ -19,6 +19,8 @@ func (f Generator) GenerateFromDependency(dependency postal.Dependency, path str
 }
 
 func main() {
+	logEmitter := scribe.NewEmitter(os.Stdout).WithLevel(os.Getenv("BP_LOG_LEVEL"))
+
 	packit.Run(
 		icu.Detect(),
 		icu.Build(
@@ -26,7 +28,7 @@ func main() {
 			icu.NewICULayerArranger(),
 			Generator{},
 			chronos.DefaultClock,
-			scribe.NewEmitter(os.Stdout),
+			logEmitter,
 		),
 	)
 }
