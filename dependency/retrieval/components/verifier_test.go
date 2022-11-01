@@ -64,7 +64,10 @@ func testVerifier(t *testing.T, context spec.G, it spec.S) {
 
 		armoredKeyWriter.Close()
 
-		verifier = components.NewVerifier().WithPublicKey(armoredPubKey.String())
+		verifier = components.NewVerifier().WithPublicKeyBlock(`-----BEGIN PGP PUBLIC KEY BLOCK-----
+another key
+-----END PGP PUBLIC KEY BLOCK-----
+` + armoredPubKey.String())
 
 		server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			if req.Method == http.MethodHead {
@@ -113,17 +116,6 @@ func testVerifier(t *testing.T, context spec.G, it spec.S) {
 				})
 			})
 
-			context("when public key is not armored", func() {
-				it.Before(func() {
-					verifier = verifier.WithPublicKey("")
-				})
-
-				it("returns an error", func() {
-					err := verifier.Verify(fmt.Sprintf("%s/source-asc", server.URL), fmt.Sprintf("%s/source", server.URL))
-					Expect(err).To(MatchError(ContainSubstring("no armored data found")))
-				})
-			})
-
 			context("when the signature get failed", func() {
 				it("returns an error", func() {
 					err := verifier.Verify("not a valid url", fmt.Sprintf("%s/source", server.URL))
@@ -138,7 +130,30 @@ func testVerifier(t *testing.T, context spec.G, it spec.S) {
 				})
 			})
 
+			context("when public key is not armored", func() {
+				var errorBuffer *bytes.Buffer
+
+				it.Before(func() {
+					errorBuffer = bytes.NewBuffer(nil)
+
+					verifier = verifier.
+						WithPublicKeyBlock(`-----BEGIN PGP PUBLIC KEY BLOCK-----
+not a key
+-----END PGP PUBLIC KEY BLOCK-----`).
+						WithErrorWriter(errorBuffer)
+				})
+
+				it("returns an error", func() {
+					err := verifier.Verify(fmt.Sprintf("%s/source-asc", server.URL), fmt.Sprintf("%s/source", server.URL))
+					Expect(err).To(MatchError("no valid pgp keys provided"))
+
+					Expect(errorBuffer.String()).To(ContainSubstring("failed to read armored key: openpgp: invalid argument: no armored data found"))
+				})
+			})
+
 			context("when the detached signature does not match the key", func() {
+				var errorBuffer *bytes.Buffer
+
 				it.Before(func() {
 					entity, err := openpgp.NewEntity("", "", "", nil)
 					Expect(err).NotTo(HaveOccurred())
@@ -158,12 +173,16 @@ func testVerifier(t *testing.T, context spec.G, it spec.S) {
 
 					armoredKeyWriter.Close()
 
-					verifier = verifier.WithPublicKey(armoredPubKey.String())
+					errorBuffer = bytes.NewBuffer(nil)
+
+					verifier = verifier.WithPublicKeyBlock(armoredPubKey.String()).WithErrorWriter(errorBuffer)
 				})
 
 				it("returns an error", func() {
 					err := verifier.Verify(fmt.Sprintf("%s/source-asc", server.URL), fmt.Sprintf("%s/source", server.URL))
-					Expect(err).To(MatchError(ContainSubstring("signature made by unknown entity")))
+					Expect(err).To(MatchError("no valid pgp keys provided"))
+
+					Expect(errorBuffer.String()).To(ContainSubstring("failed to check signature: openpgp: signature made by unknown entity"))
 				})
 			})
 		})
