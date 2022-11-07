@@ -91,7 +91,6 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 				Version: release.Version,
 				Stacks: []string{
 					"io.buildpacks.stacks.jammy",
-					"io.buildpacks.stacks.jammy.tiny",
 				},
 				Source:         source.URL,
 				SourceChecksum: fmt.Sprintf("sha512:%s", checksum),
@@ -108,7 +107,6 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 				Version: release.Version,
 				Stacks: []string{
 					"io.buildpacks.stacks.bionic",
-					"io.paketo.stacks.tiny",
 				},
 				Source:         source.URL,
 				SourceChecksum: fmt.Sprintf("sha512:%s", checksum),

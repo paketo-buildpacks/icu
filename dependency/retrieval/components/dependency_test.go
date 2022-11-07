@@ -148,7 +148,6 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 						SourceSHA256:   "",
 						Stacks: []string{
 							"io.buildpacks.stacks.jammy",
-							"io.buildpacks.stacks.jammy.tiny",
 						},
 						StripComponents: 0,
 						URI:             "",
@@ -170,7 +169,6 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 						SourceSHA256:   "",
 						Stacks: []string{
 							"io.buildpacks.stacks.bionic",
-							"io.paketo.stacks.tiny",
 						},
 						StripComponents: 0,
 						URI:             "",
