@@ -13,7 +13,7 @@ docker build --tag compilation-jammy --file jammy.Dockerfile .
 
 2. Make the output directory:
 ```shell
-output_dir=$(mktemp -d)
+export output_dir=$(mktemp -d)
 ```
 
 3. Run compilation and use a volume mount to access it:
