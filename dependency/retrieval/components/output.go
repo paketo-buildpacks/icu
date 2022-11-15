@@ -12,14 +12,22 @@ type OutputDependency struct {
 	Target string `json:"target"`
 }
 
-func WriteOutput(path string, dependencies []OutputDependency) error {
+func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency, target string) error {
+	var output []OutputDependency
+	for _, dependency := range dependencies {
+		output = append(output, OutputDependency{
+			ConfigMetadataDependency: dependency,
+			Target:                   target,
+		})
+	}
+
 	file, err := os.Create(path)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	err = json.NewEncoder(file).Encode(dependencies)
+	err = json.NewEncoder(file).Encode(output)
 	if err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/paketo-buildpacks/icu/dependency/retrieval/components"
+	"github.com/paketo-buildpacks/packit/v2/cargo"
 )
 
 func main() {
@@ -36,20 +37,20 @@ func main() {
 
 	verifier := components.NewVerifier()
 
-	var dependencies []components.OutputDependency
+	var dependencies []cargo.ConfigMetadataDependency
 	for _, version := range newVersions {
 		for _, r := range releases {
 			if r.SemVer.String() == version {
-				outputDependencies, err := components.ConvertReleaseToDependency(r, verifier)
+				dependency, err := components.ConvertReleaseToDependency(r, verifier)
 				if err != nil {
 					log.Fatal(err)
 				}
-				dependencies = append(dependencies, outputDependencies...)
+				dependencies = append(dependencies, dependency)
 			}
 		}
 	}
 
-	err = components.WriteOutput(outputPath, dependencies)
+	err = components.WriteOutput(outputPath, dependencies, "ubuntu")
 	if err != nil {
 		log.Fatal(err)
 	}

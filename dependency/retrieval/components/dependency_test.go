@@ -133,49 +133,24 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 			}, signatureVerifier)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(dependency).To(Equal([]components.OutputDependency{
-				{
-					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
-						Checksum:       "",
-						CPE:            "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
-						PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
-						ID:             "icu",
-						Licenses:       []interface{}{"MIT", "MIT-0"},
-						Name:           "ICU",
-						SHA256:         "",
-						Source:         fmt.Sprintf("%s/source", server.URL),
-						SourceChecksum: "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
-						SourceSHA256:   "",
-						Stacks: []string{
-							"io.buildpacks.stacks.jammy",
-						},
-						StripComponents: 0,
-						URI:             "",
-						Version:         "72.1",
-					},
-					Target: "jammy",
+			Expect(dependency).To(Equal(cargo.ConfigMetadataDependency{
+				Checksum:       "",
+				CPE:            "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
+				PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
+				ID:             "icu",
+				Licenses:       []interface{}{"MIT", "MIT-0"},
+				Name:           "ICU",
+				SHA256:         "",
+				Source:         fmt.Sprintf("%s/source", server.URL),
+				SourceChecksum: "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
+				SourceSHA256:   "",
+				Stacks: []string{
+					"io.buildpacks.stacks.jammy",
+					"io.buildpacks.stacks.bionic",
 				},
-				{
-					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
-						Checksum:       "",
-						CPE:            "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
-						PURL:           fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
-						ID:             "icu",
-						Licenses:       []interface{}{"MIT", "MIT-0"},
-						Name:           "ICU",
-						SHA256:         "",
-						Source:         fmt.Sprintf("%s/source", server.URL),
-						SourceChecksum: "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
-						SourceSHA256:   "",
-						Stacks: []string{
-							"io.buildpacks.stacks.bionic",
-						},
-						StripComponents: 0,
-						URI:             "",
-						Version:         "72.1",
-					},
-					Target: "bionic",
-				},
+				StripComponents: 0,
+				URI:             "",
+				Version:         "72.1",
 			}))
 
 			Expect(signatureVerifier.VerifyCall.Receives.SignatureURL).To(Equal(fmt.Sprintf("%s/source-asc", server.URL)))

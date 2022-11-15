@@ -36,26 +36,17 @@ func testOutput(t *testing.T, context spec.G, it spec.S) {
 
 	context("WriteOutput", func() {
 		it("will write an output file", func() {
-			err := components.WriteOutput(filepath.Join(outputDir, "output.json"), []components.OutputDependency{
+			err := components.WriteOutput(filepath.Join(outputDir, "output.json"), []cargo.ConfigMetadataDependency{
 				{
-					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
-						DeprecationDate: &depDate,
-						Licenses:        []interface{}{"MIT", "MIT-0"},
-						Name:            ".NET Core SDK",
-						SHA256:          "",
-					},
-					Target: "target",
+					DeprecationDate: &depDate,
+					Licenses:        []interface{}{"MIT", "MIT-0"},
+					Name:            ".NET Core SDK",
+					SHA256:          "",
 				},
-				{
-					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
-						Name: ".NET Core SDK",
-					},
-					Target: "target2",
-				},
-			})
+			}, "target")
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(filepath.Join(outputDir, "output.json")).To(BeAFileMatching("[{\"deprecation_date\":\"2024-11-12T00:00:00Z\",\"licenses\":[\"MIT\",\"MIT-0\"],\"name\":\".NET Core SDK\",\"target\":\"target\"},{\"name\":\".NET Core SDK\",\"target\":\"target2\"}]\n"))
+			Expect(filepath.Join(outputDir, "output.json")).To(BeAFileMatching("[{\"deprecation_date\":\"2024-11-12T00:00:00Z\",\"licenses\":[\"MIT\",\"MIT-0\"],\"name\":\".NET Core SDK\",\"target\":\"target\"}]\n"))
 		})
 
 		context("failure cases", func() {
@@ -69,17 +60,14 @@ func testOutput(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					err := components.WriteOutput(filepath.Join(outputDir, "output.json"), []components.OutputDependency{
+					err := components.WriteOutput(filepath.Join(outputDir, "output.json"), []cargo.ConfigMetadataDependency{
 						{
-							ConfigMetadataDependency: cargo.ConfigMetadataDependency{
-								DeprecationDate: &depDate,
-								Licenses:        []interface{}{"MIT", "MIT-0"},
-								Name:            ".NET Core SDK",
-								SHA256:          "",
-							},
-							Target: "target",
+							DeprecationDate: &depDate,
+							Licenses:        []interface{}{"MIT", "MIT-0"},
+							Name:            ".NET Core SDK",
+							SHA256:          "",
 						},
-					})
+					}, "target")
 					Expect(err).To(MatchError(ContainSubstring("permission denied")))
 				})
 			})
