@@ -8,5 +8,5 @@ retrieve:
 test:
 	@cd test; \
 	./test.sh \
-		--tarballPath $(tarballPath) \
-		--expectedVersion $(version)
+		--tarballPath ${tarballPath} \
+		--expectedVersion ${version}

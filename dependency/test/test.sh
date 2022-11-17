@@ -1,52 +1,20 @@
-
-
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 shopt -s inherit_errexit
 
-extract_tarball() {
-  rm -rf icu
-  mkdir icu
-  tar --extract \
-    --file "$1" \
-    --directory icu
-}
-
-set_ld_library_path() {
-  export LD_LIBRARY_PATH="$PWD/icu/lib:${LD_LIBRARY_PATH:-}"
-}
-
-check_version() {
-  expected_version=$1
-  actual_version="$(/icu/bin/icuinfo 2> /dev/null | sed -rn 's/.*param name="version">([0-9\.]+).*/\1/p')"
-  if [[ "${actual_version}" != "${expected_version}" ]]; then
-    echo "Version ${actual_version} does not match expected version ${expected_version}"
-    exit 1
-  fi
-}
-
-check_file() {
-  if ! test -f icu/lib/libicudata.so; then
-    echo "Library file missing"
-    exit 1
-  fi
-}
-
 main() {
-  local tarballPath expectedVersion
-  tarballPath=""
-  expectedVersion=""
+  local tarball_path version
 
   while [ "${#}" != 0 ]; do
     case "${1}" in
-      --tarballPath)
-        tarballPath="${2}"
+      --expectedVersion)
+        version="${2}"
         shift 2
         ;;
 
-      --expectedVersion)
-        expectedVersion="${2}"
+      --tarballPath)
+        tarball_path="${2}"
         shift 2
         ;;
 
@@ -60,25 +28,21 @@ main() {
     esac
   done
 
-  if [[ "${tarballPath}" == "" ]]; then
-    echo "--tarballPath is required"
+  if [[ -z "${version:-}" || -z "${tarball_path:-}" ]]; then
+    echo "version and tarballPath are required required"
     exit 1
   fi
 
-  if [[ "${expectedVersion}" == "" ]]; then
-    echo "--expectedVersion is required"
-    exit 1
-  fi
+  dir="$(dirname "${tarball_path}")"
+  artifact="$(basename "${tarball_path}")"
 
-  echo "tarballPath=${tarballPath}"
-  echo "expectedVersion=${expectedVersion}"
+  echo "Running bionic test..."
+  docker build -t test-bionic -f bionic.Dockerfile .
+  docker run --rm -v "${dir}:/input" test-bionic --tarballPath "/input/${artifact}" --expectedVersion "${version}"
 
-  extract_tarball "${tarballPath}"
-  set_ld_library_path
-  check_version "${expectedVersion}"
-  check_file
-
-  echo "All tests passed!"
+  echo "Running jammy test..."
+  docker build -t test-jammy -f jammy.Dockerfile .
+  docker run --rm -v "${dir}:/input" test-jammy --tarballPath "/input/${artifact}" --expectedVersion "${version}"
 }
 
-main "$@"
+main "${@:-}"
