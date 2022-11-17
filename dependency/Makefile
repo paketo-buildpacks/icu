@@ -1,4 +1,4 @@
-.PHONY: retrieve
+.PHONY: test retrieve
 
 retrieve:
 	@go run ./retrieval \

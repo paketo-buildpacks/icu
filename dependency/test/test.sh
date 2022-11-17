@@ -3,6 +3,7 @@
 #!/bin/bash
 
 set -euo pipefail
+shopt -s inherit_errexit
 
 extract_tarball() {
   rm -rf icu
