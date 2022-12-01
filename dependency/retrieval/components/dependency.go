@@ -84,13 +84,9 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 	}
 
 	return cargo.ConfigMetadataDependency{
-		ID:      "icu",
-		Name:    "ICU",
-		Version: release.Version,
-		Stacks: []string{
-			"io.buildpacks.stacks.jammy",
-			"io.buildpacks.stacks.bionic",
-		},
+		ID:             "icu",
+		Name:           "ICU",
+		Version:        release.Version,
 		Source:         source.URL,
 		SourceChecksum: fmt.Sprintf("sha512:%s", checksum),
 		CPE:            fmt.Sprintf(`cpe:2.3:a:icu-project:international_components_for_unicode:%s:*:*:*:*:c\/c\+\+:*:*`, release.Version),

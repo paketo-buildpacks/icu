@@ -4,8 +4,11 @@ Running compilation locally:
 ```shell
 docker build --tag compilation-<target> --file <target>.Dockerfile .
 
-# Ubuntu example
-docker build --tag compilation-ubuntu --file ubuntu.Dockerfile .
+# Jammy example
+docker build --tag compilation-jammy --file jammy.Dockerfile .
+
+# Bionic example
+docker build --tag compilation-bionic --file bionic.Dockerfile .
 ```
 
 2. Make the output directory:
@@ -17,6 +20,9 @@ export output_dir=$(mktemp -d)
 ```shell
 docker run --volume $output_dir:/tmp/compilation compilation-<target> --outputDir /tmp/compilation --target <target> --version <version> 
 
-# Ubuntu example
-docker run --volume $output_dir:/tmp/compilation compilation-ubuntu --outputDir /tmp/compilation --target ubuntu --version 72.1
+# Jammy example
+docker run --volume $output_dir:/tmp/compilation compilation-jammy --outputDir /tmp/compilation --target jammy --version 72.1
+
+# Bionic example
+docker run --volume $output_dir:/tmp/compilation compilation-bionic --outputDir /tmp/compilation --target bionic --version 72.1
 ```

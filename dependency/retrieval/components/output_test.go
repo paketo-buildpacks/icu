@@ -43,10 +43,10 @@ func testOutput(t *testing.T, context spec.G, it spec.S) {
 					Name:            ".NET Core SDK",
 					SHA256:          "",
 				},
-			}, "target")
+			}, map[string][]string{"target": []string{"test"}})
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(filepath.Join(outputDir, "output.json")).To(BeAFileMatching("[{\"deprecation_date\":\"2024-11-12T00:00:00Z\",\"licenses\":[\"MIT\",\"MIT-0\"],\"name\":\".NET Core SDK\",\"target\":\"target\"}]\n"))
+			Expect(filepath.Join(outputDir, "output.json")).To(BeAFileMatching("[{\"deprecation_date\":\"2024-11-12T00:00:00Z\",\"licenses\":[\"MIT\",\"MIT-0\"],\"name\":\".NET Core SDK\",\"stacks\":[\"test\"],\"target\":\"target\"}]\n"))
 		})
 
 		context("failure cases", func() {
@@ -67,7 +67,7 @@ func testOutput(t *testing.T, context spec.G, it spec.S) {
 							Name:            ".NET Core SDK",
 							SHA256:          "",
 						},
-					}, "target")
+					}, nil)
 					Expect(err).To(MatchError(ContainSubstring("permission denied")))
 				})
 			})

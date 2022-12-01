@@ -12,13 +12,16 @@ type OutputDependency struct {
 	Target string `json:"target"`
 }
 
-func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency, target string) error {
+func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency, targets map[string][]string) error {
 	var output []OutputDependency
 	for _, dependency := range dependencies {
-		output = append(output, OutputDependency{
-			ConfigMetadataDependency: dependency,
-			Target:                   target,
-		})
+		for target, stacks := range targets {
+			dependency.Stacks = stacks
+			output = append(output, OutputDependency{
+				ConfigMetadataDependency: dependency,
+				Target:                   target,
+			})
+		}
 	}
 
 	file, err := os.Create(path)
