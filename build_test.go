@@ -31,7 +31,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		cnbDir     string
 
 		dependencyManager *fakes.DependencyManager
-		layerArranger     *fakes.LayerArranger
 		sbomGenerator     *fakes.SBOMGenerator
 
 		buffer *bytes.Buffer
@@ -74,8 +73,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			},
 		}
 
-		layerArranger = &fakes.LayerArranger{}
-
 		buffer = bytes.NewBuffer(nil)
 
 		buildContext = packit.BuildContext{
@@ -103,7 +100,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		build = icu.Build(
 			dependencyManager,
-			layerArranger,
 			sbomGenerator,
 			chronos.DefaultClock,
 			scribe.NewEmitter(buffer))
@@ -170,8 +166,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(dependencyManager.DeliverCall.Receives.CnbPath).To(Equal(cnbDir))
 		Expect(dependencyManager.DeliverCall.Receives.LayerPath).To(Equal(filepath.Join(layersDir, "icu")))
 		Expect(dependencyManager.DeliverCall.Receives.PlatformPath).To(Equal("platform"))
-
-		Expect(layerArranger.ArrangeCall.Receives.Path).To(Equal(filepath.Join(layersDir, "icu")))
 
 		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dependency).To(Equal(postal.Dependency{
 			ID:       "icu",
@@ -373,17 +367,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		it("fails with the error", func() {
 			_, err := build(buildContext)
 			Expect(err).To(MatchError("failed to install dependency"))
-		})
-	})
-
-	context("when the layerArranger Arrange fails", func() {
-		it.Before(func() {
-			layerArranger.ArrangeCall.Returns.Error = errors.New("failed to arrange layer")
-		})
-
-		it("fails with the error", func() {
-			_, err := build(buildContext)
-			Expect(err).To(MatchError("failed to arrange layer"))
 		})
 	})
 

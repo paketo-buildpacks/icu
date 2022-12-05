@@ -25,7 +25,6 @@ func main() {
 		icu.Detect(),
 		icu.Build(
 			postal.NewService(cargo.NewTransport()),
-			icu.NewICULayerArranger(),
 			Generator{},
 			chronos.DefaultClock,
 			logEmitter,

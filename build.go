@@ -20,18 +20,12 @@ type DependencyManager interface {
 	GenerateBillOfMaterials(dependencies ...postal.Dependency) []packit.BOMEntry
 }
 
-//go:generate faux --interface LayerArranger --output fakes/layer_arranger.go
-type LayerArranger interface {
-	Arrange(path string) error
-}
-
 //go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
 type SBOMGenerator interface {
 	GenerateFromDependency(dependency postal.Dependency, dir string) (sbom.SBOM, error)
 }
 
 func Build(dependencyManager DependencyManager,
-	layerArranger LayerArranger,
 	sbomGenerator SBOMGenerator,
 	clock chronos.Clock,
 	logger scribe.Emitter,
@@ -113,13 +107,6 @@ func Build(dependencyManager DependencyManager,
 
 		logger.Action("Completed in %s", duration.Round(time.Millisecond))
 		logger.Break()
-
-		// LayerArranger is a stop gap until we can get the dependency artifact
-		// restructured to remove the top two directories
-		err = layerArranger.Arrange(layer.Path)
-		if err != nil {
-			return packit.BuildResult{}, err
-		}
 
 		logger.GeneratingSBOM(layer.Path)
 		var sbomContent sbom.SBOM
