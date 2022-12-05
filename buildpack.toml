@@ -16,6 +16,58 @@ api = "0.8"
   include-files = ["bin/run", "bin/build", "bin/detect", "buildpack.toml"]
   pre-package = "./scripts/build.sh"
 
+  [[metadata.dependencies]]
+    checksum = "sha256:633f3a2ba3bd26e2e11c8686a5e4e3ed02c936a3b375532308a9ce3a0e3b7f13"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:70.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "Unicode-TOU"]
+    name = "ICU"
+    purl = "pkg:generic/icu@70.1?checksum=0b26ae7207155cb65a8fdb25f7b2fa4431e74b12bccbed0884a17feaae3c96833d12451064dd152197fd6ea5fd3adfd95594284a463e66c82e0d860f645880c9&download_url=https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
+    source-checksum = "sha512:0b26ae7207155cb65a8fdb25f7b2fa4431e74b12bccbed0884a17feaae3c96833d12451064dd152197fd6ea5fd3adfd95594284a463e66c82e0d860f645880c9"
+    stacks = ["io.buildpacks.stacks.jammy"]
+    uri = "https://artifacts.paketo.io/icu/icu_70.1_linux_jammy_633f3a2b.tgz"
+    version = "70.1"
+
+  [[metadata.dependencies]]
+    checksum = "sha256:ed7a8af03b32376901c45714e73aa5d81f095e9d3c4e7ee7483fee077ca5ca6c"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:70.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "Unicode-TOU"]
+    name = "ICU"
+    purl = "pkg:generic/icu@70.1?checksum=0b26ae7207155cb65a8fdb25f7b2fa4431e74b12bccbed0884a17feaae3c96833d12451064dd152197fd6ea5fd3adfd95594284a463e66c82e0d860f645880c9&download_url=https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
+    source-checksum = "sha512:0b26ae7207155cb65a8fdb25f7b2fa4431e74b12bccbed0884a17feaae3c96833d12451064dd152197fd6ea5fd3adfd95594284a463e66c82e0d860f645880c9"
+    stacks = ["io.buildpacks.stacks.bionic"]
+    uri = "https://artifacts.paketo.io/icu/icu_70.1_linux_bionic_ed7a8af0.tgz"
+    version = "70.1"
+
+  [[metadata.dependencies]]
+    checksum = "sha256:b9acd95769a6f812bfe285ff3f8504995d94b3f94bc842fa88dbec94c1a3976c"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    purl = "pkg:generic/icu@72.1?checksum=848c341b37c0ff077e34a95d92c6200d5aaddd0ee5e06134101a74e04deb08256a5e817c8aefab020986abe810b7827dd7b2169a60dacd250c298870518dcae8&download_url=https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz"
+    source-checksum = "sha512:848c341b37c0ff077e34a95d92c6200d5aaddd0ee5e06134101a74e04deb08256a5e817c8aefab020986abe810b7827dd7b2169a60dacd250c298870518dcae8"
+    stacks = ["io.buildpacks.stacks.jammy"]
+    uri = "https://artifacts.paketo.io/icu/icu_72.1_linux_jammy_b9acd957.tgz"
+    version = "72.1"
+
+  [[metadata.dependencies]]
+    checksum = "sha256:64a31e5c91e07e86377ccea3853a3d187c917c3c8d822611ddb802ef5af0c407"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    purl = "pkg:generic/icu@72.1?checksum=848c341b37c0ff077e34a95d92c6200d5aaddd0ee5e06134101a74e04deb08256a5e817c8aefab020986abe810b7827dd7b2169a60dacd250c298870518dcae8&download_url=https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz"
+    source-checksum = "sha512:848c341b37c0ff077e34a95d92c6200d5aaddd0ee5e06134101a74e04deb08256a5e817c8aefab020986abe810b7827dd7b2169a60dacd250c298870518dcae8"
+    stacks = ["io.buildpacks.stacks.bionic"]
+    uri = "https://artifacts.paketo.io/icu/icu_72.1_linux_bionic_64a31e5c.tgz"
+    version = "72.1"
+
   [[metadata.dependency-constraints]]
     constraint = "70.*"
     id = "icu"
