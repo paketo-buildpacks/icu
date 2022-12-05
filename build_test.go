@@ -53,12 +53,12 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		dependencyManager = &fakes.DependencyManager{}
 		dependencyManager.ResolveCall.Returns.Dependency = postal.Dependency{
-			ID:      "icu",
-			Name:    "ICU",
-			SHA256:  "icu-dependency-sha",
-			Stacks:  []string{"some-stack"},
-			URI:     "icu-dependency-uri",
-			Version: "icu-dependency-version",
+			ID:       "icu",
+			Name:     "ICU",
+			Checksum: "icu-dependency-sha",
+			Stacks:   []string{"some-stack"},
+			URI:      "icu-dependency-uri",
+			Version:  "icu-dependency-version",
 		}
 		dependencyManager.GenerateBillOfMaterialsCall.Returns.BOMEntrySlice = []packit.BOMEntry{
 			{
@@ -125,7 +125,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(layer.Name).To(Equal("icu"))
 		Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
 		Expect(layer.Metadata).To(Equal(map[string]interface{}{
-			"dependency-sha": "icu-dependency-sha",
+			"dependency-checksum": "icu-dependency-sha",
 		}))
 
 		Expect(layer.Build).To(BeFalse())
@@ -150,22 +150,22 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		Expect(dependencyManager.GenerateBillOfMaterialsCall.Receives.Dependencies).To(Equal([]postal.Dependency{
 			{
-				ID:      "icu",
-				Name:    "ICU",
-				SHA256:  "icu-dependency-sha",
-				Stacks:  []string{"some-stack"},
-				URI:     "icu-dependency-uri",
-				Version: "icu-dependency-version",
+				ID:       "icu",
+				Name:     "ICU",
+				Checksum: "icu-dependency-sha",
+				Stacks:   []string{"some-stack"},
+				URI:      "icu-dependency-uri",
+				Version:  "icu-dependency-version",
 			},
 		}))
 
 		Expect(dependencyManager.DeliverCall.Receives.Dependency).To(Equal(postal.Dependency{
-			ID:      "icu",
-			Name:    "ICU",
-			SHA256:  "icu-dependency-sha",
-			Stacks:  []string{"some-stack"},
-			URI:     "icu-dependency-uri",
-			Version: "icu-dependency-version",
+			ID:       "icu",
+			Name:     "ICU",
+			Checksum: "icu-dependency-sha",
+			Stacks:   []string{"some-stack"},
+			URI:      "icu-dependency-uri",
+			Version:  "icu-dependency-version",
 		}))
 		Expect(dependencyManager.DeliverCall.Receives.CnbPath).To(Equal(cnbDir))
 		Expect(dependencyManager.DeliverCall.Receives.LayerPath).To(Equal(filepath.Join(layersDir, "icu")))
@@ -174,12 +174,12 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(layerArranger.ArrangeCall.Receives.Path).To(Equal(filepath.Join(layersDir, "icu")))
 
 		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dependency).To(Equal(postal.Dependency{
-			ID:      "icu",
-			Name:    "ICU",
-			SHA256:  "icu-dependency-sha",
-			Stacks:  []string{"some-stack"},
-			URI:     "icu-dependency-uri",
-			Version: "icu-dependency-version",
+			ID:       "icu",
+			Name:     "ICU",
+			Checksum: "icu-dependency-sha",
+			Stacks:   []string{"some-stack"},
+			URI:      "icu-dependency-uri",
+			Version:  "icu-dependency-version",
 		}))
 		Expect(sbomGenerator.GenerateFromDependencyCall.Receives.Dir).To(Equal(filepath.Join(layersDir, "icu")))
 	})
@@ -216,7 +216,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(layer.Name).To(Equal("icu"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
 			Expect(layer.Metadata).To(Equal(map[string]interface{}{
-				"dependency-sha": "icu-dependency-sha",
+				"dependency-checksum": "icu-dependency-sha",
 			}))
 			Expect(dependencyManager.ResolveCall.Receives.Path).To(Equal(filepath.Join(cnbDir, "buildpack.toml")))
 			Expect(dependencyManager.ResolveCall.Receives.Id).To(Equal("icu"))
@@ -243,7 +243,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(layer.Name).To(Equal("icu"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
 			Expect(layer.Metadata).To(Equal(map[string]interface{}{
-				"dependency-sha": "icu-dependency-sha",
+				"dependency-checksum": "icu-dependency-sha",
 			}))
 
 			Expect(layer.Build).To(BeTrue())
@@ -279,7 +279,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 	context("when there is a cache match in the layer metadata", func() {
 		it.Before(func() {
 			err := os.WriteFile(filepath.Join(layersDir, "icu.toml"),
-				[]byte("[metadata]\ndependency-sha = \"icu-dependency-sha\"\n"), 0600)
+				[]byte("[metadata]\ndependency-checksum = \"icu-dependency-sha\"\n"), 0600)
 			Expect(err).NotTo(HaveOccurred())
 
 			buildContext.Plan.Entries[0].Metadata = map[string]interface{}{
@@ -298,7 +298,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(layer.Name).To(Equal("icu"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
 			Expect(layer.Metadata).To(Equal(map[string]interface{}{
-				"dependency-sha": "icu-dependency-sha",
+				"dependency-checksum": "icu-dependency-sha",
 			}))
 
 			Expect(layer.Build).To(BeTrue())

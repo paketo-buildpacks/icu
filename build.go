@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/paketo-buildpacks/packit/v2"
+	"github.com/paketo-buildpacks/packit/v2/cargo"
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/draft"
 	"github.com/paketo-buildpacks/packit/v2/postal"
@@ -78,8 +79,8 @@ func Build(dependencyManager DependencyManager,
 			buildMetadata.BOM = bom
 		}
 
-		cachedSHA, ok := layer.Metadata[DependencyCacheKey].(string)
-		if ok && cachedSHA == dependency.SHA256 {
+		cachedChecksum, ok := layer.Metadata["dependency-checksum"].(string)
+		if ok && cargo.Checksum(dependency.Checksum).MatchString(cachedChecksum) {
 			logger.Process("Reusing cached layer %s", layer.Path)
 			logger.Break()
 
@@ -140,7 +141,7 @@ func Build(dependencyManager DependencyManager,
 		}
 
 		layer.Metadata = map[string]interface{}{
-			DependencyCacheKey: dependency.SHA256,
+			"dependency-checksum": dependency.Checksum,
 		}
 
 		return packit.BuildResult{

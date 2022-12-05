@@ -1,7 +1,6 @@
 package icu
 
 const (
-	ICULayerName       = "icu"
-	ICUDependency      = "icu"
-	DependencyCacheKey = "dependency-sha"
+	ICULayerName  = "icu"
+	ICUDependency = "icu"
 )

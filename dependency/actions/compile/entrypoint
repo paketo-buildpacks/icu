@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+function main() {
+  local version output_dir target upstream_tarball build_dir working_dir
+
+  while [ "${#}" != 0 ]; do
+    case "${1}" in
+      --version)
+        version="${2}"
+        shift 2
+        ;;
+
+      --outputDir)
+        output_dir="${2}"
+        shift 2
+        ;;
+
+      --target)
+        target="${2}"
+        shift 2
+        ;;
+
+      "")
+        shift
+        ;;
+
+      *)
+        echo "unknown argument \"${1}\""
+        exit 1
+    esac
+  done
+
+  if [[ -z "${version:-}" ]]; then
+    echo "--version is required"
+    exit 1
+  fi
+
+  if [[ -z "${output_dir:-}" ]]; then
+    echo "--outputDir is required"
+    exit 1
+  fi
+
+  if [[ -z "${target:-}" ]]; then
+    echo "--target is required"
+    exit 1
+  fi
+
+  working_dir=$(mktemp -d)
+  build_dir=$(mktemp -d)
+
+  pushd "${working_dir}" > /dev/null
+    upstream_tarball="https://github.com/unicode-org/icu/releases/download/release-${version//./-}/icu4c-${version//./_}-src.tgz"
+
+    echo "Downloading upstream tarball from ${upstream_tarball}"
+
+    curl "${upstream_tarball}" \
+      --silent \
+      --fail \
+      --location \
+      --output upstream.tgz
+
+    tar --extract \
+      --ungzip \
+      --strip-components=1 \
+      --file upstream.tgz
+
+    rm upstream.tgz
+
+    pushd "source" > /dev/null
+      ./runConfigureICU Linux --prefix="${build_dir}"
+      make
+      make install
+    popd > /dev/null
+
+    echo "Listing contents of build_dir=${build_dir}"
+
+    ls -lsa "${build_dir}"
+  popd > /dev/null
+
+  pushd "${build_dir}" > /dev/null
+      tar --create \
+        --gzip \
+        --file "${output_dir}/temp.tgz" \
+        .
+  popd > /dev/null
+
+  pushd "${output_dir}" > /dev/null
+    local sha256
+    sha256=$(sha256sum temp.tgz)
+    sha256="${sha256:0:64}"
+
+    output_tarball_name="icu_${version}_linux_${target}_${sha256:0:8}.tgz"
+
+    echo "Building tarball ${output_tarball_name}"
+
+    mv temp.tgz "${output_tarball_name}"
+    echo "sha256:${sha256}" > "${output_tarball_name}.checksum"
+  popd > /dev/null
+}
+
+main "${@:-}"

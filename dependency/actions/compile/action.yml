@@ -1,0 +1,40 @@
+name: 'Compile ICU on Target'
+description: |
+  Compiles ICU
+
+inputs:
+  version:
+    description: 'dependency version'
+    required: true
+  outputDir:
+    description: 'output directory'
+    required: true
+  target:
+    description: 'dependency OS target variant'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+
+  - name: docker build
+    shell: bash
+    run: |
+      docker build \
+        --tag compilation \
+        --file dependency/actions/compile/${{ inputs.target }}.Dockerfile \
+        dependency/actions/compile
+
+  - name: docker run
+    shell: bash
+    run: |
+      docker run \
+        --volume ${{ inputs.outputDir }}:/home \
+        compilation \
+        --version ${{ inputs.version }} \
+        --outputDir /home \
+        --target ${{ inputs.target }}
+
+  - name: print contents of output dir
+    shell: bash
+    run: ls -lah ${{ inputs.outputDir }}
