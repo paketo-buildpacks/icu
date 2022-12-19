@@ -35,11 +35,7 @@ func Build(dependencyManager DependencyManager,
 		logger.Process("Resolving ICU version")
 
 		planner := draft.NewPlanner()
-		// .NET Core 3.1 is only compatible wit ICU 70.* and below.
-		// The temporary `dotnet-31` version source allows for buildpacks
-		// that require `icu` to request a compatible ICU version when .NET
-		// Core 3.1 is used.
-		entry, allEntries := planner.Resolve("icu", context.Plan.Entries, []interface{}{"dotnet-31"})
+		entry, allEntries := planner.Resolve("icu", context.Plan.Entries, nil)
 		logger.Candidates(allEntries)
 
 		version, _ := entry.Metadata["version"].(string)
