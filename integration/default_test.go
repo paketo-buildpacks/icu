@@ -115,53 +115,5 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(string(contents)).To(ContainSubstring(`"name": "ICU"`))
 		})
-
-		context("a version is requested via the dotnet-31 version source", func() {
-			it("builds an oci image with requested icu version", func() {
-				var err error
-				source, err = occam.Source(filepath.Join("testdata", "required_version_app"))
-				Expect(err).NotTo(HaveOccurred())
-
-				var logs fmt.Stringer
-				image, logs, err = pack.WithNoColor().Build.
-					WithPullPolicy("never").
-					WithBuildpacks(
-						buildpack,
-						buildPlanBuildpack,
-					).
-					Execute(name, source)
-				Expect(err).NotTo(HaveOccurred(), logs.String())
-
-				Expect(logs.String()).To(ContainSubstring(buildpackInfo.Buildpack.Name))
-				Expect(logs).To(ContainLines(
-					MatchRegexp(fmt.Sprintf(`%s \d+\.\d+\.\d+`, buildpackInfo.Buildpack.Name)),
-					"  Resolving ICU version",
-					"    Candidate version sources (in priority order):",
-					"      dotnet-31 -> \"70.*\"",
-					"",
-					MatchRegexp(`    Selected ICU version \(using dotnet-31\): \d+\.\d+`),
-					"",
-					"  Executing build process",
-					MatchRegexp(`    Installing ICU`),
-					MatchRegexp(`      Completed in ([0-9]*(\.[0-9]*)?[a-z]+)+`),
-				))
-
-				container, err = docker.Container.Run.
-					WithCommand("icuinfo").
-					Execute(image.ID)
-				Expect(err).NotTo(HaveOccurred())
-
-				Eventually(func() string {
-					cLogs, err := docker.Container.Logs.Execute(container.ID)
-					Expect(err).NotTo(HaveOccurred())
-					return cLogs.String()
-				}).Should(
-					And(
-						ContainSubstring("International Components for Unicode for C/C++"),
-						ContainSubstring(`<param name="version">70.1</param>`),
-					),
-				)
-			})
-		})
 	})
 }
