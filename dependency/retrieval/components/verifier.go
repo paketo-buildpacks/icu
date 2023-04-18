@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"golang.org/x/crypto/openpgp"
+	"github.com/keybase/go-crypto/openpgp"
 )
 
 type Verifier struct {
