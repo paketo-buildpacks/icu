@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/keybase/go-crypto/openpgp"
+	"github.com/keybase/go-crypto/openpgp/armor"
 	"github.com/paketo-buildpacks/icu/dependency/retrieval/components"
 	"github.com/sclevine/spec"
-	"golang.org/x/crypto/openpgp"
-	"golang.org/x/crypto/openpgp/armor"
 
 	. "github.com/onsi/gomega"
 )
@@ -50,6 +50,11 @@ func testVerifier(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		primaryKey := bytes.NewBuffer(nil)
+
+		// This needs needs to be called as a work around. It appears to sign all
+		// signatures for the entity. https://stackoverflow.com/a/33513828
+		err = entity.SerializePrivate(bytes.NewBuffer(nil), nil)
+		Expect(err).NotTo(HaveOccurred())
 
 		err = entity.Serialize(primaryKey)
 		Expect(err).NotTo(HaveOccurred())
@@ -159,6 +164,11 @@ not a key
 					Expect(err).NotTo(HaveOccurred())
 
 					primaryKey := bytes.NewBuffer(nil)
+
+					// This needs needs to be called as a work around. It appears to sign all
+					// signatures for the entity. https://stackoverflow.com/a/33513828
+					err = entity.SerializePrivate(bytes.NewBuffer(nil), nil)
+					Expect(err).NotTo(HaveOccurred())
 
 					err = entity.Serialize(primaryKey)
 					Expect(err).NotTo(HaveOccurred())
