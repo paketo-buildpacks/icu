@@ -62,11 +62,6 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 
 	purl := GeneratePURL("icu", release.Version, checksum, source.URL)
 
-	licenses, err := GenerateLicenseInformation(source.URL)
-	if err != nil {
-		return cargo.ConfigMetadataDependency{}, err
-	}
-
 	// Validate the artifact
 	response, err := http.Get(source.URL)
 	if err != nil {
@@ -97,6 +92,6 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 		SourceChecksum: fmt.Sprintf("sha512:%s", checksum),
 		CPE:            fmt.Sprintf(`cpe:2.3:a:icu-project:international_components_for_unicode:%s:*:*:*:*:c\/c\+\+:*:*`, release.Version),
 		PURL:           purl,
-		Licenses:       licenses,
+		Licenses:       []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
 	}, nil
 }

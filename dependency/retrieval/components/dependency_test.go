@@ -99,11 +99,6 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 					w.WriteHeader(http.StatusOK)
 					fmt.Fprintln(w, `aaaaaaaaaaaa  icu4c-72_1-src.tgz`)
 
-				case "/bad-archive":
-					w.WriteHeader(http.StatusOK)
-					_, err := w.Write([]byte("\x66\x4C\x61\x43\x00\x00\x00\x22"))
-					Expect(err).NotTo(HaveOccurred())
-
 				default:
 					t.Fatalf("unknown path: %s", req.URL.Path)
 				}
@@ -138,7 +133,7 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 				CPE:             "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
 				PURL:            fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
 				ID:              "icu",
-				Licenses:        []interface{}{"MIT", "MIT-0"},
+				Licenses:        []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
 				Name:            "ICU",
 				SHA256:          "",
 				Source:          fmt.Sprintf("%s/source", server.URL),
@@ -206,30 +201,6 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 						},
 					}, signatureVerifier)
 					Expect(err).To(MatchError("unable to parse the shasum512 file"))
-				})
-			})
-
-			context("when the artifact is not a supported archive type", func() {
-				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("72.1"),
-						Version: "72.1",
-						Files: []components.ReleaseFile{
-							{
-								Name: "icu4c-72_1-src.tgz",
-								URL:  fmt.Sprintf("%s/bad-archive", server.URL),
-							},
-							{
-								Name: "icu4c-72_1-src.tgz.asc",
-								URL:  fmt.Sprintf("%s/source-asc", server.URL),
-							},
-							{
-								Name: "SHASUM512.txt",
-								URL:  fmt.Sprintf("%s/shasum512", server.URL),
-							},
-						},
-					}, signatureVerifier)
-					Expect(err).To(MatchError(ContainSubstring("unsupported archive type")))
 				})
 			})
 
