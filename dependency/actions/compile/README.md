@@ -7,8 +7,8 @@ docker build --tag compilation-<target> --file <target>.Dockerfile .
 # Jammy example
 docker build --tag compilation-jammy --file jammy.Dockerfile .
 
-# Bionic example
-docker build --tag compilation-bionic --file bionic.Dockerfile .
+# Noble example
+docker build --tag compilation-noble --file noble.Dockerfile .
 ```
 
 2. Make the output directory:
@@ -23,6 +23,6 @@ docker run --volume $output_dir:/tmp/compilation compilation-<target> --outputDi
 # Jammy example
 docker run --volume $output_dir:/tmp/compilation compilation-jammy --outputDir /tmp/compilation --target jammy --version 72.1
 
-# Bionic example
-docker run --volume $output_dir:/tmp/compilation compilation-bionic --outputDir /tmp/compilation --target bionic --version 72.1
+# Noble example
+docker run --volume $output_dir:/tmp/compilation compilation-noble --outputDir /tmp/compilation --target noble --version 72.1
 ```
