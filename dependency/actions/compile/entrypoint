@@ -52,7 +52,15 @@ function main() {
   build_dir=$(mktemp -d)
 
   pushd "${working_dir}" > /dev/null
-    upstream_tarball="https://github.com/unicode-org/icu/releases/download/release-${version//./-}/icu4c-${version//./_}-src.tgz"
+
+    major_version="${version%%.*}"
+
+    # ICU changed naming conventions starting with version 78
+    if [[ "${major_version}" -ge 78 ]]; then
+      upstream_tarball="https://github.com/unicode-org/icu/releases/download/release-${version}/icu4c-${version}-sources.tgz"
+    else
+      upstream_tarball="https://github.com/unicode-org/icu/releases/download/release-${version//./-}/icu4c-${version//./_}-src.tgz"
+    fi
 
     echo "Downloading upstream tarball from ${upstream_tarball}"
 
