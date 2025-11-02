@@ -21,8 +21,14 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 		if f.Name == fmt.Sprintf("icu4c-%s-src.tgz", strings.ReplaceAll(release.Version, ".", "_")) {
 			source = f
 		}
+		if f.Name == fmt.Sprintf("icu4c-%s-sources.tgz", release.Version) {
+			source = f
+		}
 
 		if f.Name == fmt.Sprintf("icu4c-%s-src.tgz.asc", strings.ReplaceAll(release.Version, ".", "_")) {
+			asc = f
+		}
+		if f.Name == fmt.Sprintf("icu4c-%s-sources.tgz.asc", release.Version) {
 			asc = f
 		}
 
@@ -46,7 +52,7 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 		return cargo.ConfigMetadataDependency{}, err
 	}
 
-	r := regexp.MustCompile(fmt.Sprintf(`([0-9a-fA-F]+)  %s`, source.Name))
+	r := regexp.MustCompile(fmt.Sprintf(`([0-9a-fA-F]+)[\s\*]+%s`, source.Name))
 
 	submatch := r.FindStringSubmatch(string(b))
 	if len(submatch) == 0 {
