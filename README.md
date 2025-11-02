@@ -5,7 +5,7 @@ The ICU CNB provides [International Components for Unicode](http://site.icu-proj
 ## Integration
 
 The ICU CNB provides icu as a dependency. Downstream buildpacks, like [Dotnet
-Core Conf CNB](https://github.com/paketo-buildpacks/dotnet-core-conf) can
+Core Publish CNB](https://github.com/paketo-buildpacks/dotnet-core-publish) can
 require the icu dependency by generating a [Build Plan
 TOML](https://github.com/buildpacks/spec/blob/master/buildpack.md#build-plan-toml)
 file that looks like the following:
