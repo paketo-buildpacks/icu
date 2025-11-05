@@ -36,17 +36,17 @@ main() {
   dir="$(dirname "${tarball_path}")"
   artifact="$(basename "${tarball_path}")"
 
-  if [[ ${artifact} == *"bionic"* ]]; then
-    echo "Running bionic test..."
-    docker build -t test-bionic -f bionic.Dockerfile .
-    docker run --rm -v "${dir}:/input" test-bionic --tarballPath "/input/${artifact}" --expectedVersion "${version}"
+  if [[ ${artifact} == *"noble"* ]]; then
+    echo "Running noble test..."
+    docker build -t test-noble -f noble.Dockerfile .
+    docker run --rm -v "${dir}:/input" test-noble --tarballPath "/input/${artifact}" --expectedVersion "${version}"
 
   elif [[ ${artifact} == *"jammy"* ]]; then
     echo "Running jammy test..."
     docker build -t test-jammy -f jammy.Dockerfile .
     docker run --rm -v "${dir}:/input" test-jammy --tarballPath "/input/${artifact}" --expectedVersion "${version}"
   else
-    echo "bionic or jammy not found - skipping tests"
+    echo "noble or jammy not found - skipping tests"
   fi
 }
 

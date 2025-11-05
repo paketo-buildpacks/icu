@@ -21,8 +21,14 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 		if f.Name == fmt.Sprintf("icu4c-%s-src.tgz", strings.ReplaceAll(release.Version, ".", "_")) {
 			source = f
 		}
+		if f.Name == fmt.Sprintf("icu4c-%s-sources.tgz", release.Version) {
+			source = f
+		}
 
 		if f.Name == fmt.Sprintf("icu4c-%s-src.tgz.asc", strings.ReplaceAll(release.Version, ".", "_")) {
+			asc = f
+		}
+		if f.Name == fmt.Sprintf("icu4c-%s-sources.tgz.asc", release.Version) {
 			asc = f
 		}
 
@@ -46,7 +52,7 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 		return cargo.ConfigMetadataDependency{}, err
 	}
 
-	r := regexp.MustCompile(fmt.Sprintf(`([0-9a-fA-F]+)  %s`, source.Name))
+	r := regexp.MustCompile(fmt.Sprintf(`([0-9a-fA-F]+)[\s\*]+%s`, source.Name))
 
 	submatch := r.FindStringSubmatch(string(b))
 	if len(submatch) == 0 {
@@ -55,11 +61,6 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 	checksum := submatch[1]
 
 	purl := GeneratePURL("icu", release.Version, checksum, source.URL)
-
-	licenses, err := GenerateLicenseInformation(source.URL)
-	if err != nil {
-		return cargo.ConfigMetadataDependency{}, err
-	}
 
 	// Validate the artifact
 	response, err := http.Get(source.URL)
@@ -91,6 +92,6 @@ func ConvertReleaseToDependency(release Release, signatureVerifier SignatureVeri
 		SourceChecksum: fmt.Sprintf("sha512:%s", checksum),
 		CPE:            fmt.Sprintf(`cpe:2.3:a:icu-project:international_components_for_unicode:%s:*:*:*:*:c\/c\+\+:*:*`, release.Version),
 		PURL:           purl,
-		Licenses:       licenses,
+		Licenses:       []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
 	}, nil
 }

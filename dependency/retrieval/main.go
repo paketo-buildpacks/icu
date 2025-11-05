@@ -10,8 +10,8 @@ import (
 )
 
 var targetMap = map[string][]string{
-	"jammy":  []string{"io.buildpacks.stacks.jammy"},
-	"bionic": []string{"io.buildpacks.stacks.bionic"},
+	"jammy": []string{"io.buildpacks.stacks.jammy"},
+	"noble": []string{"io.buildpacks.stacks.noble"},
 }
 
 func main() {
