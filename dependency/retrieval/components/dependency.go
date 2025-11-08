@@ -90,7 +90,7 @@ func (g Generator) GenerateMetadata(versionFetcher versionology.VersionFetcher) 
 	icuVersion := versionFetcher.(IcuRelease)
 
 	version := icuVersion.ReleaseVersion
-	icuUrls, err := getUrls(icuVersion)
+	icuUrls, err := getReleaseFiles(icuVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (g Generator) GenerateMetadata(versionFetcher versionology.VersionFetcher) 
 	if err != nil {
 		return nil, err
 	}
-	err = validateReleaseFiles(icuUrls, checksum, g.SignatureVerifier)
+	err = verifySources(icuUrls, checksum, g.SignatureVerifier)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (g Generator) GenerateMetadata(versionFetcher versionology.VersionFetcher) 
 	})
 }
 
-func getUrls(release IcuRelease) (IcuReleaseFiles, error) {
+func getReleaseFiles(release IcuRelease) (IcuReleaseFiles, error) {
 	var source, shasum512, asc ReleaseFile
 	for _, f := range release.Files {
 		if f.Name == fmt.Sprintf("icu4c-%s-src.tgz", strings.ReplaceAll(release.ReleaseVersion, ".", "_")) {
@@ -183,8 +183,8 @@ func getChecksum(checksumUrl string, fileName string) (string, error) {
 	return checksum, nil
 }
 
-func validateReleaseFiles(files IcuReleaseFiles, checksum string, signatureVerifier SignatureVerifier) error {
-	// Validate the checksum
+func verifySources(files IcuReleaseFiles, checksum string, signatureVerifier SignatureVerifier) error {
+	// Verify the checksum
 	response, err := http.Get(files.Source.URL)
 	if err != nil {
 		return err
@@ -201,7 +201,7 @@ func validateReleaseFiles(files IcuReleaseFiles, checksum string, signatureVerif
 		return fmt.Errorf("the given checksum of the source does not match with downloaded source")
 	}
 
-	// Validate the signature
+	// Verify the signature
 	err = signatureVerifier.Verify(files.Signature.URL, files.Source.URL)
 	if err != nil {
 		return err
