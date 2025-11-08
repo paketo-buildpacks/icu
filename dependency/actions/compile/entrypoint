@@ -4,7 +4,11 @@ set -eu
 set -o pipefail
 
 function main() {
-  local version output_dir target upstream_tarball build_dir working_dir
+  local version output_dir target upstream_tarball build_dir working_dir os arch
+
+  # default values
+  os="linux"
+  arch="amd64"
 
   while [ "${#}" != 0 ]; do
     case "${1}" in
@@ -20,6 +24,16 @@ function main() {
 
       --target)
         target="${2}"
+        shift 2
+        ;;
+
+      --os)
+        os="${2}"
+        shift 2
+        ;;
+
+      --arch)
+        arch="${2}"
         shift 2
         ;;
 
@@ -50,6 +64,12 @@ function main() {
 
   working_dir=$(mktemp -d)
   build_dir=$(mktemp -d)
+
+  echo "version=${version}"
+  echo "output_dir=${output_dir}"
+  echo "target=${target}"
+  echo "os=${os}"
+  echo "arch=${arch}"
 
   pushd "${working_dir}" > /dev/null
 
@@ -100,7 +120,7 @@ function main() {
     sha256=$(sha256sum temp.tgz)
     sha256="${sha256:0:64}"
 
-    output_tarball_name="icu_${version}_linux_${target}_${sha256:0:8}.tgz"
+    output_tarball_name="icu_${version}_${os}_${arch}_${target}_${sha256:0:8}.tgz"
 
     echo "Building tarball ${output_tarball_name}"
 

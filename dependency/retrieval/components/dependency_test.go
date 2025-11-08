@@ -12,6 +12,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/paketo-buildpacks/icu/dependency/retrieval/components"
 	"github.com/paketo-buildpacks/icu/dependency/retrieval/components/fakes"
+	"github.com/paketo-buildpacks/libdependency/versionology"
 	"github.com/paketo-buildpacks/packit/v2/cargo"
 	"github.com/sclevine/spec"
 
@@ -51,10 +52,11 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 		Expect = NewWithT(t).Expect
 	)
 
-	context("ConvertReleaseToDependeny", func() {
+	context("GenerateMetadata", func() {
 		var (
 			server            *httptest.Server
 			signatureVerifier *fakes.SignatureVerifier
+			generator         components.Generator
 		)
 
 		it.Before(func() {
@@ -105,12 +107,21 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 			}))
 
 			signatureVerifier = &fakes.SignatureVerifier{}
+			generator = components.
+				NewGenerator().
+				WithVerifier(signatureVerifier).
+				WithTarget(components.PlatformStackTarget{
+					Stacks: []string{"stack"},
+					OS:     "linux",
+					Arch:   "amd64",
+					Target: "target",
+				})
 		})
 
 		it("returns returns a cargo dependency generated from the given release", func() {
-			dependency, err := components.ConvertReleaseToDependency(components.Release{
-				SemVer:  semver.MustParse("72.1"),
-				Version: "72.1",
+			dependencies, err := generator.GenerateMetadata(components.IcuRelease{
+				SemVer:         semver.MustParse("72.1"),
+				ReleaseVersion: "72.1",
 				Files: []components.ReleaseFile{
 					{
 						Name: "icu4c-72_1-src.tgz",
@@ -125,24 +136,35 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 						URL:  fmt.Sprintf("%s/shasum512", server.URL),
 					},
 				},
-			}, signatureVerifier)
+			})
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(dependency).To(Equal(cargo.ConfigMetadataDependency{
-				Checksum:        "",
-				CPE:             "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
-				PURL:            fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
-				ID:              "icu",
-				Licenses:        []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
-				Name:            "ICU",
-				SHA256:          "",
-				Source:          fmt.Sprintf("%s/source", server.URL),
-				SourceChecksum:  "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
-				SourceSHA256:    "",
-				StripComponents: 0,
-				URI:             "",
-				Version:         "72.1",
-			}))
+			Expect(dependencies).To(HaveLen(1))
+			dependency := dependencies[0]
+
+			Expect(dependency).To(BeEquivalentTo(
+				versionology.Dependency{
+					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
+						Checksum:        "",
+						CPE:             "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
+						PURL:            fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
+						ID:              "icu",
+						Licenses:        []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
+						Name:            "ICU",
+						SHA256:          "",
+						Source:          fmt.Sprintf("%s/source", server.URL),
+						SourceChecksum:  "sha512:a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c",
+						SourceSHA256:    "",
+						StripComponents: 0,
+						URI:             "",
+						Version:         "72.1",
+						OS:              "linux",
+						Arch:            "amd64",
+						Stacks:          []string{"stack"},
+					},
+					SemverVersion: semver.MustParse("72.1"),
+					Target:        "target",
+				}))
 
 			Expect(signatureVerifier.VerifyCall.Receives.SignatureURL).To(Equal(fmt.Sprintf("%s/source-asc", server.URL)))
 			Expect(signatureVerifier.VerifyCall.Receives.TargetURL).To(Equal(fmt.Sprintf("%s/source", server.URL)))
@@ -151,16 +173,16 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 		context("failure cases", func() {
 			context("when there are missing release files", func() {
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{}, signatureVerifier)
+					_, err := generator.GenerateMetadata(components.IcuRelease{})
 					Expect(err).To(MatchError("required files are missing from the release"))
 				})
 			})
 
 			context("when the shasum file get fails", func() {
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("72.1"),
-						Version: "72.1",
+					_, err := generator.GenerateMetadata(components.IcuRelease{
+						SemVer:         semver.MustParse("72.1"),
+						ReleaseVersion: "72.1",
 						Files: []components.ReleaseFile{
 							{
 								Name: "icu4c-72_1-src.tgz",
@@ -175,16 +197,16 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 								URL:  "not a valid url",
 							},
 						},
-					}, signatureVerifier)
+					})
 					Expect(err).To(MatchError(ContainSubstring("unsupported protocol scheme")))
 				})
 			})
 
 			context("when the shasum file cannot be parsed correctly", func() {
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("72.1"),
-						Version: "72.1",
+					_, err := generator.GenerateMetadata(components.IcuRelease{
+						SemVer:         semver.MustParse("72.1"),
+						ReleaseVersion: "72.1",
 						Files: []components.ReleaseFile{
 							{
 								Name: "icu4c-72_1-src.tgz",
@@ -199,16 +221,16 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 								URL:  fmt.Sprintf("%s/bad-shasum", server.URL),
 							},
 						},
-					}, signatureVerifier)
-					Expect(err).To(MatchError("unable to parse the shasum512 file"))
+					})
+					Expect(err).To(MatchError("unable to parse the SHASUM512 file"))
 				})
 			})
 
 			context("when the checksum does not match", func() {
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("72.1"),
-						Version: "72.1",
+					_, err := generator.GenerateMetadata(components.IcuRelease{
+						SemVer:         semver.MustParse("72.1"),
+						ReleaseVersion: "72.1",
 						Files: []components.ReleaseFile{
 							{
 								Name: "icu4c-72_1-src.tgz",
@@ -223,7 +245,7 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 								URL:  fmt.Sprintf("%s/wrong-shasum", server.URL),
 							},
 						},
-					}, signatureVerifier)
+					})
 					Expect(err).To(MatchError("the given checksum of the source does not match with downloaded source"))
 				})
 			})
@@ -234,9 +256,9 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 				})
 
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("72.1"),
-						Version: "72.1",
+					_, err := generator.GenerateMetadata(components.IcuRelease{
+						SemVer:         semver.MustParse("72.1"),
+						ReleaseVersion: "72.1",
 						Files: []components.ReleaseFile{
 							{
 								Name: "icu4c-72_1-src.tgz",
@@ -251,7 +273,7 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 								URL:  fmt.Sprintf("%s/shasum512", server.URL),
 							},
 						},
-					}, signatureVerifier)
+					})
 					Expect(err).To(MatchError("verifier failed"))
 				})
 			})
