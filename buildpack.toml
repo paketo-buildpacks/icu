@@ -28,6 +28,8 @@ api = "0.8"
     stacks = ["io.buildpacks.stacks.jammy"]
     uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_jammy_fb50ef73.tgz"
     version = "78.1"
+    os = "linux"
+    arch = "amd64"
 
   [[metadata.dependencies]]
     checksum = "sha256:cc78fa90d50422b2c43981d4e5f4a7ec92f7bfd5ecd4ffa4b56580303d2896c3"
@@ -41,6 +43,8 @@ api = "0.8"
     stacks = ["io.buildpacks.stacks.noble"]
     uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_noble_cc78fa90.tgz"
     version = "78.1"
+    os = "linux"
+    arch = "amd64"
 
   [[metadata.dependency-constraints]]
     constraint = "*"

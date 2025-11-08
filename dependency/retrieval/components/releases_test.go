@@ -8,6 +8,7 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/paketo-buildpacks/icu/dependency/retrieval/components"
+	"github.com/paketo-buildpacks/libdependency/versionology"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
@@ -19,7 +20,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 		Expect = NewWithT(t).Expect
 	)
 
-	context("Fetcher", func() {
+	context("GetIcuVersions", func() {
 		var (
 			fetcher components.Fetcher
 
@@ -110,13 +111,13 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("fetches a list of relevant releases", func() {
-			releases, err := fetcher.Get()
+			releases, err := fetcher.GetIcuVersions()
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(releases).To(Equal([]components.Release{
-				{
-					SemVer:  semver.MustParse("72.1"),
-					Version: "72.1",
+			Expect(releases).To(BeEquivalentTo([]versionology.VersionFetcher{
+				components.IcuRelease{
+					SemVer:         semver.MustParse("72.1"),
+					ReleaseVersion: "72.1",
 					Files: []components.ReleaseFile{
 						{
 							Name: "icu4c-72_1-src.tgz",
@@ -124,9 +125,9 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 						},
 					},
 				},
-				{
-					SemVer:  semver.MustParse("71.2"),
-					Version: "71.2",
+				components.IcuRelease{
+					SemVer:         semver.MustParse("71.2"),
+					ReleaseVersion: "71.2",
 					Files: []components.ReleaseFile{
 						{
 							Name: "icu4c-71_2-src.tgz",
@@ -144,7 +145,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetIcuVersions()
 					Expect(err).To(MatchError(ContainSubstring("unsupported protocol scheme")))
 				})
 			})
@@ -155,7 +156,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetIcuVersions()
 					Expect(err).To(MatchError("received a non 200 status code: status code 418 received"))
 				})
 			})
@@ -166,7 +167,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetIcuVersions()
 					Expect(err).To(MatchError(ContainSubstring("invalid character '?' looking for beginning of value")))
 				})
 			})
@@ -177,7 +178,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetIcuVersions()
 					Expect(err).To(MatchError(ContainSubstring("invalid semantic version")))
 				})
 			})

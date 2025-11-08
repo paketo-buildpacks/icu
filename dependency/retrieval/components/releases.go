@@ -7,12 +7,13 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/paketo-buildpacks/libdependency/versionology"
 )
 
-type Release struct {
-	SemVer  *semver.Version
-	Version string
-	Files   []ReleaseFile
+type IcuRelease struct {
+	SemVer         *semver.Version
+	ReleaseVersion string
+	Files          []ReleaseFile
 }
 
 type ReleaseFile struct {
@@ -22,6 +23,10 @@ type ReleaseFile struct {
 
 type Fetcher struct {
 	api string
+}
+
+func (icuRelease IcuRelease) Version() *semver.Version {
+	return icuRelease.SemVer
 }
 
 func NewFetcher() Fetcher {
@@ -35,9 +40,9 @@ func (f Fetcher) WithAPI(uri string) Fetcher {
 	return f
 }
 
-func (f Fetcher) Get() ([]Release, error) {
+func (f Fetcher) GetIcuVersions() (versionology.VersionFetcherArray, error) {
 	page := 1
-	var releases []Release
+	var releases versionology.VersionFetcherArray
 	for {
 		resp, err := http.Get(fmt.Sprintf("%s/repos/unicode-org/icu/releases?per_page=100&page=%d", f.api, page))
 		if err != nil {
@@ -71,11 +76,11 @@ func (f Fetcher) Get() ([]Release, error) {
 				continue
 			}
 
-			var r Release
-			r.Version = strings.TrimPrefix(release.Name, "ICU ") // The space is important
-			r.SemVer, err = semver.NewVersion(r.Version)
+			var r IcuRelease
+			r.ReleaseVersion = strings.TrimPrefix(release.Name, "ICU ") // The space is important
+			r.SemVer, err = semver.NewVersion(r.ReleaseVersion)
 			if err != nil {
-				return nil, fmt.Errorf("%w: the following version string could not be parsed %q", err, r.Version)
+				return nil, fmt.Errorf("%w: the following version string could not be parsed %q", err, r.ReleaseVersion)
 			}
 			r.Files = release.Assets
 
