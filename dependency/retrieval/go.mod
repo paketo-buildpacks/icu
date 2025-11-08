@@ -1,6 +1,6 @@
 module github.com/paketo-buildpacks/icu/dependency/retrieval
 
-go 1.24.6
+go 1.24.10
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
