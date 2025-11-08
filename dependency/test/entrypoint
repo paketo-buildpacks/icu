@@ -33,9 +33,13 @@ check_file() {
 }
 
 main() {
-  local tarballPath expectedVersion
+  local tarballPath expectedVersion os arch
   tarballPath=""
   expectedVersion=""
+
+  # default values
+  os="linux"
+  arch="x64"
 
   while [ "${#}" != 0 ]; do
     case "${1}" in
@@ -46,6 +50,16 @@ main() {
 
       --expectedVersion)
         expectedVersion="${2}"
+        shift 2
+        ;;
+
+      --os)
+        os="${2}"
+        shift 2
+        ;;
+
+      --arch)
+        arch="${2}"
         shift 2
         ;;
 
