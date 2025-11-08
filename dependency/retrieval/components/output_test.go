@@ -43,10 +43,10 @@ func testOutput(t *testing.T, context spec.G, it spec.S) {
 					Name:            ".NET Core SDK",
 					SHA256:          "",
 				},
-			}, map[string][]string{"target": []string{"test"}})
+			}, []components.PlatformStackTarget{{Stacks: []string{"test"}, Target: "target", OS: "linux", Arch: "amd64"}})
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(filepath.Join(outputDir, "output.json")).To(BeAFileMatching("[{\"deprecation_date\":\"2024-11-12T00:00:00Z\",\"licenses\":[\"MIT\",\"MIT-0\"],\"name\":\".NET Core SDK\",\"stacks\":[\"test\"],\"target\":\"target\"}]\n"))
+			Expect(filepath.Join(outputDir, "output.json")).To(BeAFileMatching("[{\"arch\":\"amd64\",\"deprecation_date\":\"2024-11-12T00:00:00Z\",\"licenses\":[\"MIT\",\"MIT-0\"],\"name\":\".NET Core SDK\",\"os\":\"linux\",\"stacks\":[\"test\"],\"target\":\"target\"}]\n"))
 		})
 
 		context("failure cases", func() {

@@ -27,23 +27,23 @@ var supportedPlatforms = map[string][]string{
 }
 
 type PlatformStackTarget struct {
-	stacks []string
-	target string
-	os     string
-	arch   string
+	Stacks []string
+	Target string
+	OS     string
+	Arch   string
 }
 
-func getSupportedPlatformStackTargets() []PlatformStackTarget {
+func GetSupportedPlatformStackTargets() []PlatformStackTarget {
 	var platformStackTargets []PlatformStackTarget
 
 	for os, architectures := range supportedPlatforms {
 		for _, arch := range architectures {
 			for _, pair := range supportedStacks {
 				platformStackTargets = append(platformStackTargets, PlatformStackTarget{
-					stacks: pair.stacks,
-					target: pair.target,
-					os:     os,
-					arch:   arch,
+					Stacks: pair.stacks,
+					Target: pair.target,
+					OS:     os,
+					Arch:   arch,
 				})
 			}
 		}
@@ -52,16 +52,16 @@ func getSupportedPlatformStackTargets() []PlatformStackTarget {
 	return platformStackTargets
 }
 
-func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency) error {
+func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency, platformTargets []PlatformStackTarget) error {
 	var output []OutputDependency
 	for _, dependency := range dependencies {
-		for _, platformTarget := range getSupportedPlatformStackTargets() {
-			dependency.Stacks = platformTarget.stacks
-			dependency.OS = platformTarget.os
-			dependency.Arch = platformTarget.arch
+		for _, platformTarget := range platformTargets {
+			dependency.Stacks = platformTarget.Stacks
+			dependency.OS = platformTarget.OS
+			dependency.Arch = platformTarget.Arch
 			output = append(output, OutputDependency{
 				ConfigMetadataDependency: dependency,
-				Target:                   platformTarget.target,
+				Target:                   platformTarget.Target,
 			})
 		}
 	}

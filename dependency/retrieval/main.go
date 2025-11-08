@@ -50,7 +50,7 @@ func main() {
 		}
 	}
 
-	err = components.WriteOutput(outputPath, dependencies)
+	err = components.WriteOutput(outputPath, dependencies, components.GetSupportedPlatformStackTargets())
 	if err != nil {
 		log.Fatal(err)
 	}
