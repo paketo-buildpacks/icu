@@ -13,8 +13,8 @@ api = "0.8"
     uri = "https://github.com/paketo-buildpacks/icu/blob/main/LICENSE"
 
 [metadata]
-  include-files = ["buildpack.toml", "linux/amd64/bin/build", "linux/amd64/bin/detect", "linux/amd64/bin/run"]
-  pre-package = "./scripts/build.sh --target linux/amd64"
+  include-files = ["buildpack.toml", "linux/amd64/bin/build", "linux/amd64/bin/detect", "linux/amd64/bin/run", "linux/arm64/bin/build", "linux/arm64/bin/detect", "linux/arm64/bin/run"]
+  pre-package = "./scripts/build.sh --target linux/amd64 --target linux/arm64"
 
   [[metadata.dependencies]]
     checksum = "sha256:fb50ef732c917c24bd99fd62f55e9e9cd148edab8d8cdbf7720216fd31c11d9d"
@@ -55,4 +55,8 @@ api = "0.8"
 
 [[targets]]
   arch = "amd64"
+  os = "linux"
+
+[[targets]]
+  arch = "arm64"
   os = "linux"
