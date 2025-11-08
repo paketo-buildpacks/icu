@@ -9,11 +9,6 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/cargo"
 )
 
-var targetMap = map[string][]string{
-	"jammy": []string{"io.buildpacks.stacks.jammy"},
-	"noble": []string{"io.buildpacks.stacks.noble"},
-}
-
 func main() {
 	var buildpackTOMLPath, outputPath string
 	set := flag.NewFlagSet("", flag.ContinueOnError)
@@ -55,7 +50,7 @@ func main() {
 		}
 	}
 
-	err = components.WriteOutput(outputPath, dependencies, targetMap)
+	err = components.WriteOutput(outputPath, dependencies)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -12,14 +12,56 @@ type OutputDependency struct {
 	Target string `json:"target"`
 }
 
-func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency, targets map[string][]string) error {
+type StackAndTargetPair struct {
+	stacks []string
+	target string
+}
+
+var supportedStacks = []StackAndTargetPair{
+	{stacks: []string{"io.buildpacks.stacks.jammy"}, target: "jammy"},
+	{stacks: []string{"io.buildpacks.stacks.noble"}, target: "noble"},
+}
+
+var supportedPlatforms = map[string][]string{
+	"linux": {"amd64", "arm64"},
+}
+
+type PlatformStackTarget struct {
+	stacks []string
+	target string
+	os     string
+	arch   string
+}
+
+func getSupportedPlatformStackTargets() []PlatformStackTarget {
+	var platformStackTargets []PlatformStackTarget
+
+	for os, architectures := range supportedPlatforms {
+		for _, arch := range architectures {
+			for _, pair := range supportedStacks {
+				platformStackTargets = append(platformStackTargets, PlatformStackTarget{
+					stacks: pair.stacks,
+					target: pair.target,
+					os:     os,
+					arch:   arch,
+				})
+			}
+		}
+	}
+
+	return platformStackTargets
+}
+
+func WriteOutput(path string, dependencies []cargo.ConfigMetadataDependency) error {
 	var output []OutputDependency
 	for _, dependency := range dependencies {
-		for target, stacks := range targets {
-			dependency.Stacks = stacks
+		for _, platformTarget := range getSupportedPlatformStackTargets() {
+			dependency.Stacks = platformTarget.stacks
+			dependency.OS = platformTarget.os
+			dependency.Arch = platformTarget.arch
 			output = append(output, OutputDependency{
 				ConfigMetadataDependency: dependency,
-				Target:                   target,
+				Target:                   platformTarget.target,
 			})
 		}
 	}
