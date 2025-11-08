@@ -16,35 +16,6 @@ api = "0.8"
   include-files = ["buildpack.toml", "linux/amd64/bin/build", "linux/amd64/bin/detect", "linux/amd64/bin/run", "linux/arm64/bin/build", "linux/arm64/bin/detect", "linux/arm64/bin/run"]
   pre-package = "./scripts/build.sh --target linux/amd64 --target linux/arm64"
 
-  [[metadata.dependencies]]
-    checksum = "sha256:fb50ef732c917c24bd99fd62f55e9e9cd148edab8d8cdbf7720216fd31c11d9d"
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.1:*:*:*:*:c\\/c\\+\\+:*:*"
-    id = "icu"
-    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
-    name = "ICU"
-    purl = "pkg:generic/icu@78.1?checksum=c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d&download_url=https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source = "https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source-checksum = "sha512:c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d"
-    stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_jammy_fb50ef73.tgz"
-    version = "78.1"
-    os = "linux"
-    arch = "amd64"
-
-  [[metadata.dependencies]]
-    checksum = "sha256:cc78fa90d50422b2c43981d4e5f4a7ec92f7bfd5ecd4ffa4b56580303d2896c3"
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.1:*:*:*:*:c\\/c\\+\\+:*:*"
-    id = "icu"
-    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
-    name = "ICU"
-    purl = "pkg:generic/icu@78.1?checksum=c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d&download_url=https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source = "https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source-checksum = "sha512:c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d"
-    stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_noble_cc78fa90.tgz"
-    version = "78.1"
-    os = "linux"
-    arch = "amd64"
 
   [[metadata.dependency-constraints]]
     constraint = "*"
