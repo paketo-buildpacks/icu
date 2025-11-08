@@ -2,9 +2,6 @@ module github.com/paketo-buildpacks/icu/dependency/retrieval
 
 go 1.24.6
 
-// This is required because of a breaking change in a newer version
-replace github.com/ekzhu/minhash-lsh => github.com/ekzhu/minhash-lsh v0.0.0-20171225071031-5c06ee8586a1
-
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/keybase/go-crypto v0.0.0-20200123153347-de78d2cb44f4
@@ -52,7 +49,6 @@ require (
 	golang.org/x/net v0.46.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
-	golang.org/x/tools v0.38.0 // indirect
 	gonum.org/v1/gonum v0.16.0 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
