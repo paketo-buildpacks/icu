@@ -18,63 +18,63 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:3bf0e04173cba5f2fee6ed3c5ff0addc63c51eeca76737ae3b2ee0f2e9a4f303"
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    checksum = "sha256:7f8064f5b13ce60857d62253a08a9283f627e62d53f879d11c8062b5f1caa0e7"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.2:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
     name = "ICU"
     os = "linux"
-    purl = "pkg:generic/icu@78.1?checksum=c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d&download_url=https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source = "https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source-checksum = "sha512:c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d"
+    purl = "pkg:generic/icu@78.2?checksum=92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6&download_url=https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source-checksum = "sha512:92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6"
     stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_amd64_jammy_3bf0e041.tgz"
-    version = "78.1"
+    uri = "https://artifacts.paketo.io/icu/icu_78.2_linux_amd64_jammy_7f8064f5.tgz"
+    version = "78.2"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:d83386c73e48e9e6a880aa1c406d2e6ddeeb43a01a49e5f31930cdd2ad7c80f9"
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    checksum = "sha256:4764ca4865d8328db09f565b512142000e41b38696102cab22e368a5c4064fce"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.2:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
     name = "ICU"
     os = "linux"
-    purl = "pkg:generic/icu@78.1?checksum=c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d&download_url=https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source = "https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source-checksum = "sha512:c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d"
+    purl = "pkg:generic/icu@78.2?checksum=92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6&download_url=https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source-checksum = "sha512:92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6"
     stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_arm64_jammy_d83386c7.tgz"
-    version = "78.1"
+    uri = "https://artifacts.paketo.io/icu/icu_78.2_linux_arm64_jammy_4764ca48.tgz"
+    version = "78.2"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:b2840b47e2dcbfc72258d6f4542f1a595e7720c78396b5e85f3d333865ad1906"
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    checksum = "sha256:6745f91c97f8b6262a84aaa14df4a0f6eda402b96dc600fca5de587417bd65da"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.2:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
     name = "ICU"
     os = "linux"
-    purl = "pkg:generic/icu@78.1?checksum=c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d&download_url=https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source = "https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source-checksum = "sha512:c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d"
+    purl = "pkg:generic/icu@78.2?checksum=92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6&download_url=https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source-checksum = "sha512:92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6"
     stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_amd64_noble_b2840b47.tgz"
-    version = "78.1"
+    uri = "https://artifacts.paketo.io/icu/icu_78.2_linux_amd64_noble_6745f91c.tgz"
+    version = "78.2"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:b309e0e30ee5951e223de0a3a156b93d90420f950da34c11ad0bcd830fac1608"
-    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.1:*:*:*:*:c\\/c\\+\\+:*:*"
+    checksum = "sha256:a81f0bcf456b622f4727d83f6a1fc856dba0a8da64274d82eda10a0d08e92022"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.2:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
     name = "ICU"
     os = "linux"
-    purl = "pkg:generic/icu@78.1?checksum=c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d&download_url=https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source = "https://github.com/unicode-org/icu/releases/download/release-78.1/icu4c-78.1-sources.tgz"
-    source-checksum = "sha512:c366398fdb50afc6355a8c45ed1d68a18eaa5f07a5d1c4555becbcfb9d4073e65ebe1e9caf24b93779b11b36cd813c98dd59e4b19f008851f25c7262811c112d"
+    purl = "pkg:generic/icu@78.2?checksum=92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6&download_url=https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.2/icu4c-78.2-sources.tgz"
+    source-checksum = "sha512:92feddfe81c57336f386c7cbc9f6d976bf349db148a77a247c4559676f51116115c8c52c4d907feb50933f72ab75fd8e48be092bf9c8ca33a3e8fabc9372a5d6"
     stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.1_linux_arm64_noble_b309e0e3.tgz"
-    version = "78.1"
+    uri = "https://artifacts.paketo.io/icu/icu_78.2_linux_arm64_noble_a81f0bcf.tgz"
+    version = "78.2"
 
   [[metadata.dependency-constraints]]
     constraint = "*"
