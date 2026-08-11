@@ -18,7 +18,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:5432382c3cbbc31fd15fcce4f10dc651730b04394c53cb954f54c39bb93074d0"
+    checksum = "sha256:ef9d6f146acb4ec2eb32ed3e8f450cc49dcbdbc0ab4ff25f35ab6c55c1b0b0cd"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -28,7 +28,7 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_jammy_5432382c.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_jammy_ef9d6f14.tgz"
     version = "78.3"
 
     [[metadata.dependencies.distros]]
@@ -37,7 +37,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:b8bf28446183bda248d7238319c6a43a6c33634d2fd150b676248ae628214973"
+    checksum = "sha256:2a330de2f7094b4850e608a66d1038764d3cf5851cb03acd8b922b526fc3245b"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -47,7 +47,7 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_jammy_b8bf2844.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_jammy_2a330de2.tgz"
     version = "78.3"
 
     [[metadata.dependencies.distros]]
@@ -56,7 +56,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:192abd28f88b794c757fab3b45ea1cac2db5d15fb753e9d63659c9658c6c4d76"
+    checksum = "sha256:69c8befaca7779f5b4f58d8b0304cd387215d8322a33f0c7b4ac61ccc6cd7e56"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -66,7 +66,7 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_noble_192abd28.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_noble_69c8befa.tgz"
     version = "78.3"
 
     [[metadata.dependencies.distros]]
@@ -75,7 +75,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:20ff86a8a8c9107af18d2a9cf48636bb0334171afd003e4e7f6489e9e863f97b"
+    checksum = "sha256:2934ea2e0d9bb59487aa6383005eae315db7c1d2910813511607f69d8e9770c8"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -85,7 +85,7 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_noble_20ff86a8.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_noble_2934ea2e.tgz"
     version = "78.3"
 
     [[metadata.dependencies.distros]]
@@ -94,7 +94,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:5f90286da8e411076566c86255c249f612dd1425312d3b9d354086a8fe3be7f6"
+    checksum = "sha256:6a2dd92e4baf979f0fe6e7b8f13e2a76055a7d0a2cbf49c7adafb79b8e5f31db"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -104,7 +104,7 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.resolute"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_resolute_5f90286d.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_resolute_6a2dd92e.tgz"
     version = "78.3"
 
     [[metadata.dependencies.distros]]
@@ -113,7 +113,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:e76e071f81706b973949f1bf689772315c5dd2ac22273cc7ea7eb94358c432e5"
+    checksum = "sha256:90ec60430ab69b6860cad02de260dd0d879da25ce18010cd20756a0bdf03648b"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -123,7 +123,7 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.resolute"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_resolute_e76e071f.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_resolute_90ec6043.tgz"
     version = "78.3"
 
     [[metadata.dependencies.distros]]
