@@ -18,7 +18,7 @@ api = "0.8"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:e90116f90bcfef821a51707fe64a66b4ec31a575c8d043e8ece82edb294c4410"
+    checksum = "sha256:ef9d6f146acb4ec2eb32ed3e8f450cc49dcbdbc0ab4ff25f35ab6c55c1b0b0cd"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -28,12 +28,12 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_jammy_e90116f9.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_jammy_ef9d6f14.tgz"
     version = "78.3"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:9ab8c28f91f74eea063c57ced88cb0a223fc30d9c74934a5458eb0f2e9dd794f"
+    checksum = "sha256:2a330de2f7094b4850e608a66d1038764d3cf5851cb03acd8b922b526fc3245b"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -43,12 +43,12 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.jammy"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_jammy_9ab8c28f.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_jammy_2a330de2.tgz"
     version = "78.3"
 
   [[metadata.dependencies]]
     arch = "amd64"
-    checksum = "sha256:dd3497e80fc43a10b56166a07136c1faebc974e00aceaf0316bab9dba6a58bb2"
+    checksum = "sha256:69c8befaca7779f5b4f58d8b0304cd387215d8322a33f0c7b4ac61ccc6cd7e56"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -58,12 +58,12 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_noble_dd3497e8.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_noble_69c8befa.tgz"
     version = "78.3"
 
   [[metadata.dependencies]]
     arch = "arm64"
-    checksum = "sha256:14cf88e873438fc066f6abe31a7faa84c19f7775793452b0d07ef2db8ba99f90"
+    checksum = "sha256:2934ea2e0d9bb59487aa6383005eae315db7c1d2910813511607f69d8e9770c8"
     cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
     id = "icu"
     licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
@@ -73,7 +73,37 @@ api = "0.8"
     source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
     source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
     stacks = ["io.buildpacks.stacks.noble"]
-    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_noble_14cf88e8.tgz"
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_noble_2934ea2e.tgz"
+    version = "78.3"
+
+  [[metadata.dependencies]]
+    arch = "amd64"
+    checksum = "sha256:6a2dd92e4baf979f0fe6e7b8f13e2a76055a7d0a2cbf49c7adafb79b8e5f31db"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.resolute"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_resolute_6a2dd92e.tgz"
+    version = "78.3"
+
+  [[metadata.dependencies]]
+    arch = "arm64"
+    checksum = "sha256:90ec60430ab69b6860cad02de260dd0d879da25ce18010cd20756a0bdf03648b"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.resolute"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_resolute_90ec6043.tgz"
     version = "78.3"
 
   [[metadata.dependency-constraints]]
@@ -86,6 +116,9 @@ api = "0.8"
 
 [[stacks]]
   id = "io.buildpacks.stacks.noble"
+
+[[stacks]]
+  id = "io.buildpacks.stacks.resolute"
 
 [[targets]]
   arch = "amd64"
