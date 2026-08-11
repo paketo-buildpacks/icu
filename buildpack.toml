@@ -16,6 +16,120 @@ api = "0.8"
   include-files = ["buildpack.toml", "linux/amd64/bin/build", "linux/amd64/bin/detect", "linux/amd64/bin/run", "linux/arm64/bin/build", "linux/arm64/bin/detect", "linux/arm64/bin/run"]
   pre-package = "./scripts/build.sh --target linux/amd64 --target linux/arm64"
 
+  [[metadata.dependencies]]
+    arch = "amd64"
+    checksum = "sha256:5432382c3cbbc31fd15fcce4f10dc651730b04394c53cb954f54c39bb93074d0"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.jammy"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_jammy_5432382c.tgz"
+    version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "22.04"
+
+  [[metadata.dependencies]]
+    arch = "arm64"
+    checksum = "sha256:b8bf28446183bda248d7238319c6a43a6c33634d2fd150b676248ae628214973"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.jammy"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_jammy_b8bf2844.tgz"
+    version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "22.04"
+
+  [[metadata.dependencies]]
+    arch = "amd64"
+    checksum = "sha256:192abd28f88b794c757fab3b45ea1cac2db5d15fb753e9d63659c9658c6c4d76"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.noble"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_noble_192abd28.tgz"
+    version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "24.04"
+
+  [[metadata.dependencies]]
+    arch = "arm64"
+    checksum = "sha256:20ff86a8a8c9107af18d2a9cf48636bb0334171afd003e4e7f6489e9e863f97b"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.noble"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_noble_20ff86a8.tgz"
+    version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "24.04"
+
+  [[metadata.dependencies]]
+    arch = "amd64"
+    checksum = "sha256:5f90286da8e411076566c86255c249f612dd1425312d3b9d354086a8fe3be7f6"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.resolute"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_resolute_5f90286d.tgz"
+    version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "26.04"
+
+  [[metadata.dependencies]]
+    arch = "arm64"
+    checksum = "sha256:e76e071f81706b973949f1bf689772315c5dd2ac22273cc7ea7eb94358c432e5"
+    cpe = "cpe:2.3:a:icu-project:international_components_for_unicode:78.3:*:*:*:*:c\\/c\\+\\+:*:*"
+    id = "icu"
+    licenses = ["BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"]
+    name = "ICU"
+    os = "linux"
+    purl = "pkg:generic/icu@78.3?checksum=04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245&download_url=https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source = "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz"
+    source-checksum = "sha512:04a49455e1489030c520a4bfd2664fa2171e7938d08f2acdbbcb1fda976639fd8b1f0704f2eec89ba59a7b6d118ceaab6ec5a096e40d9085a0895d91ce225245"
+    stacks = ["io.buildpacks.stacks.resolute"]
+    uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_resolute_e76e071f.tgz"
+    version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "26.04"
+
   [[metadata.dependency-constraints]]
     constraint = "*"
     id = "icu"
@@ -34,30 +148,6 @@ api = "0.8"
   arch = "amd64"
   os = "linux"
 
-  [[targets.distros]]
-  name = "Ubuntu"
-  version = "22.04"
-
-  [[targets.distros]]
-  name = "Ubuntu"
-  version = "24.04"
-
-  [[targets.distros]]
-  name = "Ubuntu"
-  version = "26.04"
-
 [[targets]]
   arch = "arm64"
   os = "linux"
-
-  [[targets.distros]]
-  name = "Ubuntu"
-  version = "22.04"
-
-  [[targets.distros]]
-  name = "Ubuntu"
-  version = "24.04"
-
-  [[targets.distros]]
-  name = "Ubuntu"
-  version = "26.04"
