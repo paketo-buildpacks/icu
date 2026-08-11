@@ -124,6 +124,30 @@ api = "0.8"
   arch = "amd64"
   os = "linux"
 
+  [[targets.distros]]
+  name = "Ubuntu"
+  version = "22.04"
+
+  [[targets.distros]]
+  name = "Ubuntu"
+  version = "24.04"
+
+  [[targets.distros]]
+  name = "Ubuntu"
+  version = "26.04"
+
 [[targets]]
   arch = "arm64"
   os = "linux"
+
+  [[targets.distros]]
+  name = "Ubuntu"
+  version = "22.04"
+
+  [[targets.distros]]
+  name = "Ubuntu"
+  version = "24.04"
+
+  [[targets.distros]]
+  name = "Ubuntu"
+  version = "26.04"
