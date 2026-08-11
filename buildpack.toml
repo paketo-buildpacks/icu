@@ -1,4 +1,4 @@
-api = "0.8"
+api = "0.10"
 
 [buildpack]
   description = "A buildpack for installing the approriate version of ICU (International Components for Unicode)"
