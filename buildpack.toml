@@ -87,6 +87,9 @@ api = "0.8"
 [[stacks]]
   id = "io.buildpacks.stacks.noble"
 
+[[stacks]]
+  id = "io.buildpacks.stacks.resolute"
+
 [[targets]]
   arch = "amd64"
   os = "linux"
