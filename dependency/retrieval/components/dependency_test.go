@@ -111,10 +111,11 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 				NewGenerator().
 				WithVerifier(signatureVerifier).
 				WithTarget(components.PlatformStackTarget{
-					Stacks: []string{"stack"},
-					OS:     "linux",
-					Arch:   "amd64",
-					Target: "target",
+					Stacks:  []string{"stack"},
+					Distros: []cargo.ConfigDistro{{Name: "distro", Version: "1.2.3"}},
+					OS:      "linux",
+					Arch:    "amd64",
+					Target:  "target",
 				})
 		})
 
@@ -161,6 +162,7 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 						OS:              "linux",
 						Arch:            "amd64",
 						Stacks:          []string{"stack"},
+						Distros:         []cargo.ConfigDistro{{Name: "distro", Version: "1.2.3"}},
 					},
 					SemverVersion: semver.MustParse("72.1"),
 					Target:        "target",

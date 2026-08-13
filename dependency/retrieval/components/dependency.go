@@ -24,15 +24,16 @@ type IcuReleaseFiles struct {
 	Shasum512 ReleaseFile
 }
 
-type StackAndTargetPair struct {
-	stacks []string
-	target string
+type TargetMetadata struct {
+	stacks  []string
+	distros []cargo.ConfigDistro
+	target  string
 }
 
-var supportedStacks = []StackAndTargetPair{
-	{stacks: []string{"io.buildpacks.stacks.jammy"}, target: "jammy"},
-	{stacks: []string{"io.buildpacks.stacks.noble"}, target: "noble"},
-	{stacks: []string{"io.buildpacks.stacks.resolute"}, target: "resolute"},
+var supportedStacks = []TargetMetadata{
+	{stacks: []string{"io.buildpacks.stacks.jammy"}, distros: []cargo.ConfigDistro{{Name: "Ubuntu", Version: "22.04"}}, target: "jammy"},
+	{stacks: []string{"io.buildpacks.stacks.noble"}, distros: []cargo.ConfigDistro{{Name: "Ubuntu", Version: "24.04"}}, target: "noble"},
+	{stacks: []string{"io.buildpacks.stacks.resolute"}, distros: []cargo.ConfigDistro{{Name: "Ubuntu", Version: "26.04"}}, target: "resolute"},
 }
 
 var supportedPlatforms = map[string][]string{
@@ -40,10 +41,11 @@ var supportedPlatforms = map[string][]string{
 }
 
 type PlatformStackTarget struct {
-	Stacks []string
-	Target string
-	OS     string
-	Arch   string
+	Stacks  []string
+	Distros []cargo.ConfigDistro
+	Target  string
+	OS      string
+	Arch    string
 }
 
 type Generator struct {
@@ -75,10 +77,11 @@ func getSupportedPlatformStackTargets() []PlatformStackTarget {
 		for _, arch := range architectures {
 			for _, pair := range supportedStacks {
 				platformStackTargets = append(platformStackTargets, PlatformStackTarget{
-					Stacks: pair.stacks,
-					Target: pair.target,
-					OS:     os,
-					Arch:   arch,
+					Stacks:  pair.stacks,
+					Distros: pair.distros,
+					Target:  pair.target,
+					OS:      os,
+					Arch:    arch,
 				})
 			}
 		}
@@ -120,6 +123,7 @@ func (g Generator) GenerateMetadata(versionFetcher versionology.VersionFetcher) 
 			PURL:           purl,
 			Licenses:       []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
 			Stacks:         platformTarget.Stacks,
+			Distros:        platformTarget.Distros,
 			OS:             platformTarget.OS,
 			Arch:           platformTarget.Arch,
 		}

@@ -1,4 +1,4 @@
-api = "0.8"
+api = "0.10"
 
 [buildpack]
   description = "A buildpack for installing the approriate version of ICU (International Components for Unicode)"
@@ -31,6 +31,10 @@ api = "0.8"
     uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_jammy_ef9d6f14.tgz"
     version = "78.3"
 
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "22.04"
+
   [[metadata.dependencies]]
     arch = "arm64"
     checksum = "sha256:2a330de2f7094b4850e608a66d1038764d3cf5851cb03acd8b922b526fc3245b"
@@ -45,6 +49,10 @@ api = "0.8"
     stacks = ["io.buildpacks.stacks.jammy"]
     uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_jammy_2a330de2.tgz"
     version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "22.04"
 
   [[metadata.dependencies]]
     arch = "amd64"
@@ -61,6 +69,10 @@ api = "0.8"
     uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_noble_69c8befa.tgz"
     version = "78.3"
 
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "24.04"
+
   [[metadata.dependencies]]
     arch = "arm64"
     checksum = "sha256:2934ea2e0d9bb59487aa6383005eae315db7c1d2910813511607f69d8e9770c8"
@@ -75,6 +87,10 @@ api = "0.8"
     stacks = ["io.buildpacks.stacks.noble"]
     uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_noble_2934ea2e.tgz"
     version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "24.04"
 
   [[metadata.dependencies]]
     arch = "amd64"
@@ -91,6 +107,10 @@ api = "0.8"
     uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_amd64_resolute_6a2dd92e.tgz"
     version = "78.3"
 
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "26.04"
+
   [[metadata.dependencies]]
     arch = "arm64"
     checksum = "sha256:90ec60430ab69b6860cad02de260dd0d879da25ce18010cd20756a0bdf03648b"
@@ -105,6 +125,10 @@ api = "0.8"
     stacks = ["io.buildpacks.stacks.resolute"]
     uri = "https://artifacts.paketo.io/icu/icu_78.3_linux_arm64_resolute_90ec6043.tgz"
     version = "78.3"
+
+    [[metadata.dependencies.distros]]
+      name = "Ubuntu"
+      version = "26.04"
 
   [[metadata.dependency-constraints]]
     constraint = "*"
