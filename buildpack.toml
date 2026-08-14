@@ -120,6 +120,15 @@ api = "0.8"
 [[stacks]]
   id = "io.buildpacks.stacks.resolute"
 
+[[stacks]]
+  id = "io.buildpacks.stacks.ubi8"
+
+[[stacks]]
+  id = "io.buildpacks.stacks.ubi9"
+
+[[stacks]]
+  id = "io.buildpacks.stacks.ubi10"
+
 [[targets]]
   arch = "amd64"
   os = "linux"
