@@ -33,6 +33,9 @@ var supportedStacks = []StackAndTargetPair{
 	{stacks: []string{"io.buildpacks.stacks.jammy"}, target: "jammy"},
 	{stacks: []string{"io.buildpacks.stacks.noble"}, target: "noble"},
 	{stacks: []string{"io.buildpacks.stacks.resolute"}, target: "resolute"},
+	{stacks: []string{"io.buildpacks.stacks.ubi8"}, target: "ubi8"},
+	{stacks: []string{"io.buildpacks.stacks.ubi9"}, target: "ubi9"},
+	{stacks: []string{"io.buildpacks.stacks.ubi10"}, target: "ubi10"},
 }
 
 var supportedPlatforms = map[string][]string{
