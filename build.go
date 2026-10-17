@@ -123,7 +123,7 @@ func Build(dependencyManager DependencyManager,
 			return packit.BuildResult{}, err
 		}
 
-		layer.Metadata = map[string]interface{}{
+		layer.Metadata = map[string]any{
 			"dependency-checksum": dependency.Checksum,
 		}
 

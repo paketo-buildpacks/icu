@@ -121,7 +121,7 @@ func (g Generator) GenerateMetadata(versionFetcher versionology.VersionFetcher) 
 			SourceChecksum: fmt.Sprintf("sha512:%s", checksum),
 			CPE:            cpe,
 			PURL:           purl,
-			Licenses:       []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
+			Licenses:       []any{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
 			Stacks:         platformTarget.Stacks,
 			OS:             platformTarget.OS,
 			Arch:           platformTarget.Arch,
