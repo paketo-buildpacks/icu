@@ -149,7 +149,7 @@ a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb637
 						CPE:             "cpe:2.3:a:icu-project:international_components_for_unicode:72.1:*:*:*:*:c\\/c\\+\\+:*:*",
 						PURL:            fmt.Sprintf("pkg:generic/icu@72.1?checksum=a1aa65917e80e524c9b35466af83193001b1dfc030c5a084e02e2f71649a073e96382e9f561fb6378ace3f97402ebfb91beb815c18fea5c8136c3a9a04eff66c&download_url=%s/source", server.URL),
 						ID:              "icu",
-						Licenses:        []interface{}{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
+						Licenses:        []any{"BSD-2-Clause", "BSD-3-Clause", "ICU", "Unicode-TOU"},
 						Name:            "ICU",
 						SHA256:          "",
 						Source:          fmt.Sprintf("%s/source", server.URL),

@@ -87,7 +87,7 @@ func parseKeys(block string) []string {
 	var currentKey string
 	inKey := false
 
-	for _, line := range strings.Split(string(block), "\n") {
+	for line := range strings.SplitSeq(string(block), "\n") {
 		if line == "-----BEGIN PGP PUBLIC KEY BLOCK-----" {
 			currentKey = line + "\n"
 			inKey = true

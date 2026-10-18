@@ -122,7 +122,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		Expect(layer.Name).To(Equal("icu"))
 		Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
-		Expect(layer.Metadata).To(Equal(map[string]interface{}{
+		Expect(layer.Metadata).To(Equal(map[string]any{
 			"dependency-checksum": "icu-dependency-sha",
 		}))
 
@@ -242,7 +242,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			buildContext.Plan.Entries = []packit.BuildpackPlanEntry{
 				{
 					Name: "icu",
-					Metadata: map[string]interface{}{
+					Metadata: map[string]any{
 						"launch":         true,
 						"version":        "70.*",
 						"version-source": "dotnet-31",
@@ -250,7 +250,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				},
 				{
 					Name: "icu",
-					Metadata: map[string]interface{}{
+					Metadata: map[string]any{
 						"launch":         true,
 						"version":        "71.1.*",
 						"version-source": "random-source",
@@ -268,7 +268,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 			Expect(layer.Name).To(Equal("icu"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
-			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+			Expect(layer.Metadata).To(Equal(map[string]any{
 				"dependency-checksum": "icu-dependency-sha",
 			}))
 			Expect(dependencyManager.ResolveCall.Receives.Path).To(Equal(filepath.Join(cnbDir, "buildpack.toml")))
@@ -280,7 +280,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	context("when the plan entry requires the dependency during the build and launch phases", func() {
 		it.Before(func() {
-			buildContext.Plan.Entries[0].Metadata = map[string]interface{}{
+			buildContext.Plan.Entries[0].Metadata = map[string]any{
 				"build":  true,
 				"launch": true,
 			}
@@ -295,7 +295,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 			Expect(layer.Name).To(Equal("icu"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
-			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+			Expect(layer.Metadata).To(Equal(map[string]any{
 				"dependency-checksum": "icu-dependency-sha",
 			}))
 
@@ -335,7 +335,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				[]byte("[metadata]\ndependency-checksum = \"icu-dependency-sha\"\n"), 0600)
 			Expect(err).NotTo(HaveOccurred())
 
-			buildContext.Plan.Entries[0].Metadata = map[string]interface{}{
+			buildContext.Plan.Entries[0].Metadata = map[string]any{
 				"launch": false,
 				"build":  true,
 			}
@@ -350,7 +350,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 			Expect(layer.Name).To(Equal("icu"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "icu")))
-			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+			Expect(layer.Metadata).To(Equal(map[string]any{
 				"dependency-checksum": "icu-dependency-sha",
 			}))
 
