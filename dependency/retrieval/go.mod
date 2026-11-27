@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/keybase/go-crypto v0.0.0-20200123153347-de78d2cb44f4
 	github.com/onsi/gomega v1.44.0
-	github.com/paketo-buildpacks/libdependency v0.2.1
+	github.com/paketo-buildpacks/libdependency v0.2.2
 	github.com/paketo-buildpacks/packit/v2 v2.26.0
 	github.com/sclevine/spec v1.4.0
 )
@@ -33,7 +33,6 @@ require (
 	github.com/jdkato/prose v1.2.1 // indirect
 	github.com/kevinburke/ssh_config v1.6.0 // indirect
 	github.com/montanaflynn/stats v0.14.0 // indirect
-	github.com/paketo-buildpacks/occam v0.31.4 // indirect
 	github.com/pjbgf/sha1cd v0.7.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
